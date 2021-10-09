@@ -65,5 +65,6 @@ io.on("connection", (client) => {
   })
 })
 
-server.listen(3005)
-console.log("RUNNING ON PORT 3005")
+const port = process.env.PORT || 3005
+server.listen(port)
+console.log(`RUNNING ON PORT ${port}`)
