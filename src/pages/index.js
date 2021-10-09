@@ -29,7 +29,7 @@ export default function Home() {
   const classes = useStyles();
 
   useEffect(() => {
-    const s = io("http://localhost:3005");
+    const s = io("https://my-whoami-api.herokuapp.com/");
     setSocket(s);
 
     s.on("me", (data) => {
