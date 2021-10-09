@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Tooltip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -14,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     transition: "all 0.3s",
     backgroundColor: "#ccc",
-    borderRadius: 20,
-    height: 50,
-    width: 150,
+    borderRadius: 12,
+    height: 60,
+    width: 180,
     overflow: "hidden",
     display: "flex",
     alignItems: "center",
@@ -27,10 +27,20 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     fontSize: 12,
     color: "#666",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 1,
+    "-webkit-box-orient": "vertical",
   },
   itemLabel: {
     padding: 4,
     color: theme.palette.primary.main,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 1,
+    "-webkit-box-orient": "vertical",
   },
   hidden: {
     color: theme.palette.secondary.main,
@@ -76,16 +86,21 @@ function ShowUsers(props) {
           key={`item-${index}`}
           id={`item-${index}`}
           className={classes.item}
+          container
           style={{ transform: `translate(${getX(index)}px, ${getY(index)}px)` }}
         >
-          <Typography className={classes.itemText}>{u.name} ➝ </Typography>
-          <Typography className={classes.itemLabel}>
-            {u.label === "hidden" ? (
-              <span className={classes.hidden}>Oculto</span>
-            ) : (
-              u.label
-            )}
-          </Typography>
+          <Grid container justifyContent="center">
+            <Typography className={classes.itemText}>{u.name}</Typography>
+          </Grid>
+          <Grid container justifyContent="center">
+            <Typography className={classes.itemLabel}>
+              {u.label === "hidden" ? (
+                <span className={classes.hidden}>Oculto</span>
+              ) : (
+                u.label
+              )}
+            </Typography>
+          </Grid>
         </Grid>
       ))}
       <Xwrapper>
