@@ -57,48 +57,50 @@ function Playing(props) {
 
       <ShowUsers users={props.users} />
 
-      {props.currentState === states.WAITING && props.users.length > 1 ? (
-        <Grid>
-          <Grid container justifyContent="center">
-            <TextField
-              className={classes.input}
-              label={`Escolher quem ${props.users[nextUserIndex].name} vai ser`}
-              variant="filled"
-              onChange={(e) => setNextUserLabel(e.target.value)}
-            />
-            <Button
-              className={classes.button}
-              onClick={onClick}
-              variant="contained"
-              color="primary"
-              disabled={!nextUserLabel}
-            >
-              Enviar
-            </Button>
+      {props.users.length > 1 ? (
+        props.currentState === states.WAITING ? (
+          <Grid>
+            <Grid container justifyContent="center">
+              <TextField
+                className={classes.input}
+                label={`Escolher quem ${props.users[nextUserIndex].name} vai ser`}
+                variant="filled"
+                onChange={(e) => setNextUserLabel(e.target.value)}
+              />
+              <Button
+                className={classes.button}
+                onClick={onClick}
+                variant="contained"
+                color="primary"
+                disabled={!nextUserLabel}
+              >
+                Enviar
+              </Button>
+            </Grid>
+            <Grid container justifyContent="center">
+              <Button
+                className={classes.submitButton}
+                onClick={onStart}
+                variant="contained"
+                color="secondary"
+              >
+                Começar
+              </Button>
+            </Grid>
           </Grid>
+        ) : (
           <Grid container justifyContent="center">
             <Button
               className={classes.submitButton}
-              onClick={onStart}
+              onClick={onRestart}
               variant="contained"
               color="secondary"
             >
-              Começar
+              Recomeçar
             </Button>
           </Grid>
-        </Grid>
-      ) : (
-        <Grid container justifyContent="center">
-          <Button
-            className={classes.submitButton}
-            onClick={onRestart}
-            variant="contained"
-            color="secondary"
-          >
-            Recomeçar
-          </Button>
-        </Grid>
-      )}
+        )
+      ) : null}
     </Grid>
   );
 }
