@@ -17,26 +17,29 @@
 }
 
 :root {
-  color-scheme: dark;
-  --background: #0b1020;
-  --foreground: #eff4ff;
-  --card: #151e35;
-  --card-foreground: #eff4ff;
-  --popover: #19243e;
-  --popover-foreground: #eff4ff;
-  --primary: #819cff;
-  --primary-foreground: #101a3d;
-  --secondary: #233253;
-  --secondary-foreground: #eff4ff;
-  --muted: #1e2b48;
-  --muted-foreground: #aab9d8;
-  --accent: #2a3e68;
-  --accent-foreground: #dce7ff;
+  color-scheme: light;
+  --background: #f2f5fc;
+  --foreground: #16233e;
+  --card: #ffffff;
+  --card-foreground: #16233e;
+  --popover: #ffffff;
+  --popover-foreground: #16233e;
+  --primary: #3559d8;
+  --primary-foreground: #ffffff;
+  --secondary: #e6edfc;
+  --secondary-foreground: #16233e;
+  --muted: #eaf0fa;
+  --muted-foreground: #536580;
+  --accent: #dce6ff;
+  --accent-foreground: #2447b5;
   --destructive: #a72935;
   --destructive-foreground: #ffffff;
-  --border: #354565;
-  --input: #7285ac;
-  --ring: #819cff;
+  --border: #cdd8ec;
+  --input: #8194b5;
+  --ring: #3559d8;
+  --surface-inset: #f7f9fe;
+  --border-strong: #8fa2c7;
+  --primary-hover: #2948b8;
   --radius: 0.75rem;
   --font-body: 'Outfit Variable', sans-serif;
   --font-code: 'Geist Mono Variable', monospace;

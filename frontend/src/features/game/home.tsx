@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { motion } from 'motion/react'
-import { ArrowRight, Plus, SignIn, UsersThree, DeviceMobile, Check } from '@phosphor-icons/react'
-import { AVATARS, profileSchema, roomCodeSchema, type Avatar as AvatarId } from '@whoami/shared'
+import { ArrowRight, Plus, SignIn, UsersThree, DeviceMobile } from '@phosphor-icons/react'
+import { profileSchema, roomCodeSchema, type Avatar as AvatarId } from '@whoami/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Avatar, avatarLabels } from '@/components/avatar'
+import { AvatarPicker } from '@/components/avatar-picker'
 import { gameClient, useGame } from '@/lib/game-client'
 import { cn } from '@/lib/utils'
 
@@ -53,16 +53,14 @@ export function Home() {
   }
   return (
     <main id="main-content" className="home-main">
-      <section className="hero-layout" aria-labelledby="home-title">
-        <div className="hero-copy">
+      <section className="menu-layout" aria-labelledby="home-title">
+        <div className="menu-intro">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            className="menu-heading"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="home-eyebrow">
-              <span className="eyebrow-line" /> JOGUE COM OS AMIGOS
-            </div>
             <h1 id="home-title">
               Quem sou <span>eu?</span>
             </h1>
@@ -72,6 +70,22 @@ export function Home() {
               Menos você.
             </p>
           </motion.div>
+          <motion.div
+            className="hero-art"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <img
+              src="/identity-cards.webp"
+              width="1100"
+              height="1100"
+              alt="Cartas de identidades com um astronauta, um ponto de interrogação e um alienígena azul."
+              fetchPriority="high"
+            />
+          </motion.div>
+        </div>
+        <div className="menu-controls">
           <motion.div
             className="launcher"
             initial={{ opacity: 0, y: 16 }}
@@ -105,50 +119,28 @@ export function Home() {
               </button>
             </div>
             <form onSubmit={submit} className="launcher-form" noValidate>
-              <div className="space-y-2">
-                <Label htmlFor="player-name">Seu nome</Label>
-                <Input
-                  id="player-name"
-                  name="name"
-                  autoComplete="nickname"
-                  placeholder="Seu nome ou apelido"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  maxLength={24}
-                  aria-invalid={!!validation.name}
-                  aria-describedby={validation.name ? 'name-error' : undefined}
-                />
-                {validation.name && (
-                  <p id="name-error" className="field-error">
-                    {validation.name}
-                  </p>
-                )}
-              </div>
-              <fieldset>
-                <legend className="avatar-legend">Escolha seu avatar</legend>
-                <div className="avatar-picker">
-                  {AVATARS.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      aria-label={`Avatar ${avatarLabels[option]}`}
-                      aria-pressed={avatar === option}
-                      className={cn('avatar-option', avatar === option && 'avatar-selected')}
-                      onClick={() => setAvatar(option)}
-                    >
-                      <Avatar avatar={option} />
-                      {avatar === option && (
-                        <Check
-                          className="avatar-check"
-                          weight="bold"
-                          aria-hidden="true"
-                          size={12}
-                        />
-                      )}
-                    </button>
-                  ))}
+              <div className="profile-fields">
+                <div className="space-y-2 profile-name">
+                  <Label htmlFor="player-name">Seu nome</Label>
+                  <Input
+                    id="player-name"
+                    name="name"
+                    autoComplete="nickname"
+                    placeholder="Seu nome ou apelido"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={24}
+                    aria-invalid={!!validation.name}
+                    aria-describedby={validation.name ? 'name-error' : undefined}
+                  />
+                  {validation.name && (
+                    <p id="name-error" className="field-error">
+                      {validation.name}
+                    </p>
+                  )}
                 </div>
-              </fieldset>
+                <AvatarPicker value={avatar} onChange={setAvatar} />
+              </div>
               {mode === 'join' && (
                 <div className="space-y-2">
                   <Label htmlFor="room-code">Código da sala</Label>
@@ -183,41 +175,17 @@ export function Home() {
               </Button>
             </form>
           </motion.div>
+
           <div className="game-facts">
             <span>
-              <UsersThree aria-hidden="true" size={18} /> 2 a 12 pessoas
+              <UsersThree aria-hidden="true" size={17} />2 a 12 pessoas
             </span>
             <span>
-              <DeviceMobile aria-hidden="true" size={18} /> Cada um no seu celular
+              <DeviceMobile aria-hidden="true" size={17} />
+              Cada um no seu celular
             </span>
           </div>
-        </div>
-        <motion.div
-          className="hero-art"
-          initial={{ opacity: 0, scale: 0.94, rotate: -2 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-        >
-          <img
-            src="/identity-cards.webp"
-            width="1100"
-            height="1100"
-            alt="Cartas de identidades com um astronauta, um ponto de interrogação e um alienígena azul."
-            fetchPriority="high"
-          />
-        </motion.div>
-      </section>
-      <section className="home-bottom" aria-label="A regra é simples">
-        <span className="bottom-number">?</span>
-        <p>
-          Seus amigos escolhem quem você é.
-          <br />
-          <strong>Descubra fazendo perguntas.</strong>
-        </p>
-        <div className="bottom-rule">
-          Só vale responder
-          <br />
-          sim ou não.
+          <p className="menu-rule">Descubra quem você é com perguntas de sim ou não.</p>
         </div>
       </section>
     </main>

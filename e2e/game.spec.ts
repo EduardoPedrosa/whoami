@@ -12,9 +12,14 @@ async function create(page: Page, name = 'Alice') {
 async function join(page: Page, code: string, name = 'Bob') {
   await page.goto(`/?sala=${code}`)
   await page.getByLabel('Seu nome').fill(name)
-  await page.getByRole('button', { name: 'Avatar Fantasma', exact: true }).click()
+  await page.getByRole('button', { name: /Escolher avatar/ }).tap()
+  await page.getByRole('button', { name: 'Avatar Fantasma', exact: true }).tap()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(
+    page.getByRole('button', { name: 'Escolher avatar, atual: Fantasma', exact: true }),
+  ).toBeVisible()
   await expect(page.getByRole('button', { name: 'Entrar na sala', exact: true })).toBeEnabled()
-  await page.getByRole('button', { name: 'Entrar na sala', exact: true }).click()
+  await page.getByRole('button', { name: 'Entrar na sala', exact: true }).tap()
   await expect(page.getByRole('heading', { name: /Sala de espera/ })).toBeVisible()
 }
 async function assertNoOverflow(page: Page) {
@@ -160,18 +165,35 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
   await page.keyboard.press('Escape')
   await expect(page.getByRole('button', { name: 'Como jogar' })).toBeFocused()
   await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeEnabled()
-  await page.getByRole('button', { name: 'Bora jogar' }).click()
-  await expect(page.getByText('Use pelo menos 2 letras.')).toBeVisible()
   for (const size of [
     { width: 1440, height: 1000 },
     { width: 1024, height: 768 },
     { width: 768, height: 1024 },
     { width: 375, height: 812 },
     { width: 320, height: 700 },
+    { width: 320, height: 568 },
     { width: 812, height: 375 },
+    { width: 667, height: 375 },
   ]) {
     await page.setViewportSize(size)
     await assertNoOverflow(page)
+    await expect(page.locator('.site-header')).toHaveCSS('position', 'static')
+    for (const mode of ['Entrar com código', 'Criar uma sala']) {
+      await page.getByRole('button', { name: mode, exact: true }).click()
+      expect(
+        await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
+      ).toBe(true)
+      for (const element of [
+        page.locator('#home-title'),
+        page.locator('.launcher-submit'),
+        page.locator('.game-facts'),
+        page.locator('.hero-art'),
+      ]) {
+        const box = (await element.boundingBox())!
+        expect(box.y).toBeGreaterThanOrEqual(0)
+        expect(box.y + box.height).toBeLessThanOrEqual(size.height + 1)
+      }
+    }
     const header = page.locator('.site-header')
     expect(
       await header.evaluate((element) => parseFloat(getComputedStyle(element).paddingLeft)),
@@ -192,6 +214,8 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
       fullPage: true,
     })
   }
+  await page.getByRole('button', { name: 'Bora jogar' }).click()
+  await expect(page.getByText('Use pelo menos 2 letras.')).toBeVisible()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 375, height: 812 })
   await page.getByRole('button', { name: 'Entrar com código' }).click()
@@ -226,6 +250,10 @@ test('no serious accessibility violations on home, help and lobby', async ({ pag
     ).toEqual([])
   }
   await scan()
+  await page.getByRole('button', { name: /Escolher avatar/ }).click()
+  await scan()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('button', { name: /Escolher avatar/ })).toBeFocused()
   await page.getByRole('button', { name: 'Como jogar' }).click()
   await scan()
   await page.keyboard.press('Escape')

@@ -31,6 +31,14 @@ A espera, escolha de identidades, partida e resultados foram conferidos em 320, 
 
 Uma verificação adicional com eventos de toque em celular emulado passou por criação de sala, abertura/fechamento do convite e saída. Isso não equivale a testes em aparelhos físicos ou Safari/iOS.
 
+## Menu de jogo e tema claro
+
+A entrada agora usa tema claro, azul cobalto e ilustração com transparência. O cabeçalho acompanha a página e não fica fixo. Nome e avatar ficam na mesma linha; os oito avatares continuam disponíveis em uma janela acessível, com retorno do foco ao botão após fechar.
+
+O menu foi verificado sem rolagem vertical nos modos criar e entrar em 1440 × 1000, 1024 × 768, 768 × 1024, 375 × 812, 320 × 700, 320 × 568, 812 × 375 e 667 × 375. O teste verifica a altura do documento e a posição do título, ilustração, informações e botão principal. Em paisagem, as informações ocupam a coluna da ilustração para liberar espaço ao formulário.
+
+A rolagem permanece disponível quando necessária, por exemplo com teclado aberto, zoom, avisos ou mensagens de validação. Não há bloqueio global de overflow. A sala e os diálogos também usam o tema claro. A auditoria axe-core cobre a nova escolha de avatar e as telas da partida. Os cinco testes de navegador passaram também no build de produção via Docker; a entrada do segundo jogador inclui seleção do avatar por toque.
+
 ## Antes e depois
 
 ![Interface anterior](../assets/before-desktop.png)

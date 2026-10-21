@@ -4,7 +4,7 @@
 
 ## O que mudou na versão 2
 
-- Frontend inteiramente em **TypeScript + React 19 + Vite 8**, **Tailwind 4**, componentes **shadcn/ui/Radix** e Motion. Fontes locais, arte própria, avatares, navegação por teclado, movimento reduzido e layouts para celular.
+- Frontend inteiramente em **TypeScript + React 19 + Vite 8**, **Tailwind 4**, componentes **shadcn/ui/Radix** e Motion. Tema claro com azul cobalto, menu inicial compacto, fontes locais, arte própria, avatares, navegação por teclado, movimento reduzido e layouts para celular.
 - Backend **NestJS 12 + Socket.IO 4**, com regras e validação no servidor. Tipos, schemas Zod e dados de categorias compartilhados entre os dois projetos.
 - Salas por código/link, anfitrião, prontidão, categorias, cronômetro opcional, turnos, confirmação de acerto por outra pessoa, resultados e pontos acumulados entre rodadas.
 - Reconexão com sessão estável, snapshot completo, ACK com reenvio seguro e controle de versão/turno. O lugar fica reservado por 2 minutos. Recarregar não troca sua identidade.

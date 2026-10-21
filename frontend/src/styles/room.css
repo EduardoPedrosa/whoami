@@ -61,7 +61,7 @@
   text-align: center;
   font: 40px var(--font-code);
   letter-spacing: 10px;
-  background: #10192e;
+  background: var(--surface-inset);
   border: 1px dashed #7285ac;
   border-radius: 16px;
   color: var(--primary);
@@ -78,7 +78,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #bccbe8;
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 .room-steps li > span:first-child {
@@ -91,7 +91,7 @@
   font: 10px var(--font-code);
 }
 .room-steps .step-active {
-  color: #d6e1f8;
+  color: var(--foreground);
 }
 .room-steps .step-active > span:first-child {
   background: var(--primary);
@@ -117,7 +117,7 @@
 }
 .room-sidebar {
   border: 1px solid var(--border);
-  background: #17233c;
+  background: var(--card);
   border-radius: 24px;
   overflow: hidden;
 }
@@ -145,7 +145,7 @@
   align-items: center;
   gap: 10px;
   padding: 13px 5px;
-  border-bottom: 1px solid #25365a;
+  border-bottom: 1px solid var(--border);
 }
 .player-roster li:last-child {
   border: 0;
@@ -181,13 +181,13 @@
   margin: 18px 16px;
   padding: 16px;
   border-radius: 16px;
-  background: #1d2b49;
+  background: var(--accent);
   display: flex;
   gap: 10px;
 }
 .table-tip > svg {
   flex-shrink: 0;
-  color: #d6e1f8;
+  color: var(--foreground);
   margin-top: 2px;
 }
 .table-tip strong {
@@ -208,7 +208,7 @@
 }
 .activity-section h3 {
   font-size: 11px;
-  color: #bccbe8;
+  color: var(--muted-foreground);
   margin-bottom: 16px;
   font-weight: 500;
 }
@@ -273,7 +273,7 @@
   border-radius: 16px;
   display: inline-grid;
   place-items: center;
-  color: #bccbe8;
+  color: var(--muted-foreground);
   margin-left: 9px;
 }
 .lobby-welcome h2 {
@@ -301,7 +301,7 @@
 .room-settings label {
   font-size: 12px;
   font-weight: 400;
-  color: #d6e1f8;
+  color: var(--foreground);
 }
 .room-settings select {
   min-height: 48px;
@@ -309,7 +309,7 @@
   border: 1px solid var(--input);
   padding: 0 12px;
   color: var(--foreground);
-  background: #10192e;
+  background: var(--surface-inset);
   font-size: 13px;
   width: 100%;
 }
@@ -336,7 +336,7 @@
   align-items: center;
 }
 .lobby-rules svg {
-  color: #bccbe8;
+  color: var(--muted-foreground);
   flex-shrink: 0;
 }
 .lobby-rules p {
@@ -416,8 +416,8 @@
   display: inline-flex;
   padding: 6px 10px;
   border-radius: 8px;
-  background: #25365a;
-  color: #d6e1f8;
+  background: var(--secondary);
+  color: var(--foreground);
 }
 .assignment-heading h2 {
   font-size: 27px;
@@ -438,7 +438,7 @@
   border-radius: 20px;
   background: #d6e1f8;
   color: #1d2b49;
-  box-shadow: 4px 6px 0 #0b1020;
+  box-shadow: 4px 6px 0 #b5c6eb;
   transform: rotate(-1deg);
 }
 .assignment-card-top {
@@ -491,12 +491,12 @@
   color: #9c202c;
 }
 .assignment-form button {
-  background: #1d2b49;
-  color: #eff4ff;
+  background: var(--accent);
+  color: var(--foreground);
   margin-top: 6px;
 }
 .assignment-form button:hover {
-  background: #25365a;
+  background: var(--secondary);
 }
 .assignment-confirmed {
   text-align: center;
@@ -533,7 +533,7 @@
   margin-top: 12px;
 }
 .suggestion-area button {
-  color: #bccbe8;
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 .assignment-progress {
@@ -576,7 +576,7 @@
 }
 .assignment-progress > p {
   font-size: 12px;
-  color: #bccbe8;
+  color: var(--muted-foreground);
 }
 .assignment-progress strong {
   font-weight: 500;
@@ -604,7 +604,7 @@
 .turn-copy > span {
   font: 9px var(--font-code);
   letter-spacing: 1.3px;
-  color: #bccbe8;
+  color: var(--muted-foreground);
 }
 .turn-copy h2 {
   font-size: 25px;
@@ -629,7 +629,7 @@
   border: 1px solid #34476b;
   border-radius: 12px;
   padding: 12px;
-  background: #1d2b49;
+  background: var(--accent);
   color: var(--primary);
   flex-shrink: 0;
 }
@@ -637,9 +637,9 @@
   font: 18px var(--font-code);
 }
 .countdown-urgent {
-  color: #ffcf85;
+  color: #8e5005;
   border-color: #997249;
-  background: #372c1b;
+  background: #fff2da;
 }
 .turn-no-timer {
   font-size: 10px;
@@ -657,7 +657,7 @@
   position: relative;
   border: 1px solid #7285ac;
   border-radius: 20px;
-  background: #bccbe8;
+  background: #f4f7ff;
   color: #1d2b49;
   overflow: hidden;
   display: flex;
@@ -669,7 +669,7 @@
   align-items: center;
   gap: 10px;
   padding: 17px 15px;
-  border-bottom: 1px solid #bccbe8;
+  border-bottom: 1px solid var(--border);
 }
 .identity-card-header > div {
   flex: 1;
@@ -731,7 +731,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #bccbe8;
+  border-top: 1px solid var(--border);
   font-size: 9px;
   color: #34476b;
 }
@@ -744,19 +744,19 @@
   font: 9px var(--font-code);
 }
 .identity-own {
-  background: #1d2b49;
-  color: #eff4ff;
+  background: var(--accent);
+  color: var(--foreground);
   border-color: #7285ac;
 }
 .identity-own .identity-card-header {
-  border-color: #34476b;
+  border-color: var(--border-strong);
 }
 .identity-own .identity-card-header div > span {
-  color: #bccbe8;
+  color: var(--muted-foreground);
 }
 .identity-own .identity-card-footer {
-  border-color: #34476b;
-  color: #bccbe8;
+  border-color: var(--border-strong);
+  color: var(--muted-foreground);
 }
 .identity-own .identity-card-body {
   padding: 17px 15px 23px;
@@ -768,7 +768,7 @@
   font-weight: 450;
 }
 .identity-card-body > p {
-  color: #bccbe8;
+  color: var(--muted-foreground);
   font-size: 10px;
   line-height: 1.6;
   margin-top: 6px;
@@ -779,7 +779,7 @@
   font-weight: 500;
   line-height: 1;
   margin-bottom: 7px;
-  text-shadow: 2px 3px 0 #0b1020;
+  text-shadow: 2px 3px 0 #bdcdf5;
 }
 .identity-active {
   outline: 2px solid var(--primary);
@@ -789,7 +789,7 @@
   background: #d6e1f8;
 }
 .identity-solved.identity-own {
-  background: #25365a;
+  background: var(--secondary);
 }
 .identity-found {
   font-size: 10px;
@@ -811,7 +811,7 @@
   display: flex;
   gap: 9px;
   align-items: center;
-  color: #bccbe8;
+  color: var(--muted-foreground);
 }
 .turn-hint > svg {
   flex-shrink: 0;
@@ -838,7 +838,7 @@
   display: grid;
   place-items: center;
   color: var(--primary);
-  background: #1d2b49;
+  background: var(--accent);
   border-radius: 28px;
   margin: 0 auto 22px;
   transform: rotate(-7deg);
@@ -909,4 +909,22 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.assignment-form button {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.assignment-form button:hover {
+  background: var(--primary-hover);
+}
+.assignment-confirmed > button {
+  color: #34476b;
+  background: transparent;
+}
+.room-steps .step-active {
+  color: var(--primary);
+}
+.small-tag {
+  color: var(--accent-foreground);
 }

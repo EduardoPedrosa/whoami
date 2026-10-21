@@ -1,23 +1,6 @@
-@media (min-width: 1600px) {
-  .hero-layout {
-    padding-top: 60px;
-    padding-bottom: 60px;
-  }
-}
 @media (max-width: 1150px) {
   .app-shell {
     --page-gutter: 32px;
-  }
-  .hero-copy h1 {
-    font-size: 58px;
-    letter-spacing: -3px;
-  }
-  .home-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.9px;
-  }
-  .hero-art img {
-    width: calc(100% + 30px);
   }
   .room-layout {
     grid-template-columns: minmax(0, 1fr) 250px;
@@ -35,23 +18,6 @@
   }
 }
 @media (max-width: 900px) {
-  .hero-copy h1 {
-    font-size: 49px;
-    letter-spacing: -2.4px;
-  }
-  .hero-description {
-    font-size: 16px;
-  }
-  .hero-layout {
-    grid-template-columns: 1.1fr 0.9fr;
-  }
-  .hero-art img {
-    width: calc(100% + 45px);
-    margin-left: -25px;
-  }
-  .avatar-legend > span {
-    display: none;
-  }
   .room-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -91,7 +57,7 @@
     --page-gutter: 20px;
   }
   .site-header {
-    height: 82px;
+    height: 72px;
     padding-block: 16px;
   }
   .site-header nav {
@@ -116,74 +82,6 @@
   }
   .connection-status .latency {
     display: none;
-  }
-  .hero-layout {
-    display: flex;
-    flex-direction: column;
-    padding: 35px 0 30px;
-    gap: 10px;
-    align-items: stretch;
-  }
-  .hero-copy h1 {
-    font-size: clamp(40px, 7.8vw, 58px);
-    letter-spacing: -2.2px;
-    margin-bottom: 15px;
-  }
-  .home-eyebrow {
-    font-size: 8px;
-    letter-spacing: 1px;
-    margin-bottom: 21px;
-    gap: 8px;
-  }
-  .eyebrow-line {
-    width: 15px;
-  }
-  .hero-description {
-    font-size: 16px;
-    margin-bottom: 24px;
-  }
-  .launcher {
-    max-width: none;
-  }
-  .launcher-form {
-    padding: 17px 13px 12px;
-  }
-  .avatar-picker .player-avatar {
-    width: 33px;
-    height: 33px;
-  }
-  .game-facts {
-    justify-content: center;
-    font-size: 11px;
-    gap: 18px;
-    margin-top: 20px;
-  }
-  .hero-art {
-    width: min(100%, 440px);
-    margin: 10px auto 0;
-    min-height: 0;
-  }
-  .hero-art img {
-    width: 100%;
-    margin: 0;
-  }
-  .home-bottom {
-    gap: 16px;
-    padding: 22px 0;
-  }
-  .home-bottom > p {
-    font-size: 13px;
-  }
-  .bottom-rule {
-    display: none;
-  }
-  .site-footer {
-    padding: 21px 0 max(21px, env(safe-area-inset-bottom));
-    font-size: 10px;
-  }
-  .footer-question {
-    font-size: 9px;
-    gap: 3px;
   }
   .room-main {
     padding-top: 25px;
@@ -478,22 +376,6 @@
   .app-shell {
     --page-gutter: 16px;
   }
-  .hero-copy h1 {
-    font-size: 38px;
-  }
-  .avatar-picker {
-    gap: 2px;
-  }
-  .avatar-picker .player-avatar {
-    width: 29px;
-    height: 31px;
-  }
-  .avatar-picker .avatar-option {
-    padding: 2px;
-  }
-  .home-eyebrow {
-    font-size: 7px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -525,42 +407,22 @@
 fieldset {
   min-inline-size: 0;
 }
-@media (max-width: 767px) {
-  .avatar-picker {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-  }
-  .avatar-option {
-    min-height: 45px;
-  }
-  .avatar-picker .player-avatar {
-    width: 32px;
-    height: 32px;
-  }
-}
 .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
+  position: static;
   flex-shrink: 0;
   background: var(--background);
 }
 .error-banner {
-  position: sticky;
-  top: 112px;
-  z-index: 35;
+  position: relative;
 }
 #main-content,
 h1[tabindex='-1'] {
-  scroll-margin-top: 125px;
+  scroll-margin-top: 20px;
 }
 @media (max-width: 767px) {
-  .error-banner {
-    top: 94px;
-  }
   #main-content,
   h1[tabindex='-1'] {
-    scroll-margin-top: 105px;
+    scroll-margin-top: 16px;
   }
 }
 
@@ -575,5 +437,18 @@ h1[tabindex='-1'] {
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+  }
+}
+
+@media (max-height: 650px) {
+  .home-shell .site-header {
+    height: 64px;
+    padding-block: 8px;
+  }
+}
+@media (max-height: 500px) {
+  .home-shell .site-header {
+    height: 56px;
+    padding-block: 4px;
   }
 }

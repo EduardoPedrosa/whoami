@@ -27,7 +27,7 @@ export function App() {
         <a href="#main-content" className="skip-link">
           Pular para o conteúdo
         </a>
-        <div className="app-shell">
+        <div className={`app-shell ${room ? 'room-shell' : 'home-shell'}`}>
           <header className="site-header">
             <Brand inRoom={!!room} />
             <nav aria-label="Navegação principal">
