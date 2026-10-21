@@ -1,7 +1,5 @@
 node_modules/
-.next/
-out/
-build/
+dist/
 coverage/
 .env
 .env.*
@@ -10,3 +8,6 @@ coverage/
 *.pem
 *.log
 .vercel/
+data/
+playwright-report/
+test-results/

@@ -1,23 +1,31 @@
 {
   "name": "@whoami/backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
+  "version": "2.0.0",
+  "private": true,
+  "main": "dist/main.js",
   "scripts": {
-    "start": "node --env-file-if-exists=.env src/index.js",
-    "dev": "node --watch --env-file-if-exists=.env src/index.js",
-    "test": "node --test test/*.test.js",
-    "lint": "node --check src/index.js && node --check src/utils/getNextUserIndex.js && node --check src/utils/sendToAllAndHideOwnLabel.js && node --check src/utils/states.js"
+    "dev": "tsc-watch --onSuccess \"node --env-file-if-exists=.env dist/main.js\"",
+    "build": "tsc -p tsconfig.json",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "lodash": "^4.17.21",
-    "socket.io": "^4.2.0"
+    "@whoami/shared": "2.0.0",
+    "@nestjs/common": "^12.2.0",
+    "@nestjs/core": "^12.2.0",
+    "@nestjs/platform-express": "^12.2.0",
+    "@nestjs/platform-socket.io": "^12.2.0",
+    "@nestjs/websockets": "^12.2.0",
+    "better-sqlite3": "^13.0.3",
+    "helmet": "^8.3.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "socket.io": "^4.8.4"
   },
   "devDependencies": {
-    "socket.io-client": "^4.2.0"
-  },
-  "private": true
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/express": "^5.0.6",
+    "socket.io-client": "^4.8.4",
+    "tsc-watch": "^7.2.0"
+  }
 }

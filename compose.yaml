@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      target: backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      DATABASE_PATH: /data/whoami.sqlite
+    volumes:
+      - game-data:/data
+    expose:
+      - '3005'
+    stop_grace_period: 15s
+  frontend:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      target: frontend
+    restart: unless-stopped
+    ports:
+      - '${WEB_PORT:-8080}:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+volumes:
+  game-data:

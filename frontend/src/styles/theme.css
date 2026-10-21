@@ -1,0 +1,122 @@
+@custom-variant dark (&:is(.dark *));
+@font-face {
+  font-family: 'Outfit Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+@font-face {
+  font-family: 'Geist Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+
+:root {
+  color-scheme: dark;
+  --background: #101713;
+  --foreground: #f1f3e9;
+  --card: #19231c;
+  --card-foreground: #f1f3e9;
+  --popover: #1b261e;
+  --popover-foreground: #f1f3e9;
+  --primary: #d2f74b;
+  --primary-foreground: #17220c;
+  --secondary: #28342a;
+  --secondary-foreground: #f1f3e9;
+  --muted: #222e25;
+  --muted-foreground: #a9b5aa;
+  --accent: #30422b;
+  --accent-foreground: #e3f5c7;
+  --destructive: #a72935;
+  --destructive-foreground: #ffffff;
+  --border: #344137;
+  --input: #667b6a;
+  --ring: #d2f74b;
+  --radius: 0.75rem;
+  --font-body: 'Outfit Variable', sans-serif;
+  --font-code: 'Geist Mono Variable', monospace;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button,
+  a,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  select:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+  button,
+  input,
+  select {
+    font: inherit;
+  }
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+  }
+  ::selection {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+  input::placeholder {
+    color: var(--muted-foreground);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  p {
+    margin: 0;
+  }
+}

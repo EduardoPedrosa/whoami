@@ -1,66 +1,75 @@
-# Arquitetura do Whoami
+# Arquitetura do Whoami 2
 
-## Fluxo do jogo
+## Decisões
 
-1. O navegador abre uma conexão Socket.IO e recebe `me` com o ID da conexão.
-2. `FirstPage` envia `enter` com o nome. O servidor adiciona o jogador à lista global e publica `users` individualmente para cada participante.
-3. A interface passa de `FIRST_PAGE` para `WAITING`. `ShowUsers` desenha os participantes em círculo e as setas indicam quem escolhe a identidade de quem.
-4. `Playing` envia `setLabel`. O servidor atribui a identidade ao próximo participante na ordem de entrada, com retorno ao primeiro ao chegar ao fim.
-5. O servidor copia a lista para cada destinatário e substitui sua própria identidade por `hidden`. A identidade real do destinatário não é enviada para seu socket.
-6. `start` exige pelo menos dois jogadores e todas as identidades preenchidas. O servidor muda de `WAITING` para `STARTED` e emite `started`; o frontend passa a `PLAYING`.
-7. `restart` apaga todas as identidades, republica a lista e emite `restarted`.
-8. A desconexão remove o participante. Quando a lista fica vazia, o servidor retorna a `WAITING`.
+O frontend é uma SPA React/TypeScript com Vite. Não existe necessidade de SSR para o tabuleiro privado. Tailwind fornece os tokens/utilitários; shadcn/ui fornece componentes locais sobre Radix para diálogos, botões, inputs e tooltips. Motion anima entrada de cartas e transições de etapas, respeitando a preferência de movimento reduzido. Outfit e Geist Mono são servidas localmente. A ilustração da entrada é um asset WebP de aproximadamente 82 KB, sem renderização 3D em tempo real.
 
-## Mapa de arquivos
+O backend é uma aplicação NestJS. `GameGateway` administra transporte, ACK, origem, presença e limites. `GameService` é a autoridade das regras. `DatabaseService` guarda snapshots, sessões e recibos em SQLite com WAL, chaves estrangeiras e transações síncronas. Há um limite defensivo de 250 salas por instância e 12 jogadores por sala.
 
-| Arquivo | Responsabilidade |
-| --- | --- |
-| `frontend/src/pages/index.js` | Conexão, listeners, estado da tela, jogadores e erros |
-| `frontend/src/pages/_app.js` | CSS baseline, título e limpeza do CSS JSS servido pelo servidor |
-| `frontend/src/pages/_document.js` | HTML em português e coleta dos estilos Material UI para SSR |
-| `frontend/src/components/FirstPage/index.js` | Entrada do nome e envio de `enter` |
-| `frontend/src/components/Playing/index.js` | Escolha da identidade seguinte, início e reinício |
-| `frontend/src/components/Playing/ShowUsers.js` | Disposição circular e setas via react-xarrows |
-| `frontend/src/components/UI/Alert.js` | Snackbar para erros enviados pelo backend |
-| `frontend/src/utils/states.js` | Estados da interface: FIRST_PAGE, WAITING e PLAYING |
-| `backend/src/index.js` | Servidor HTTP/Socket.IO, lista global e handlers do jogo |
-| `backend/src/utils/getNextUserIndex.js` | Seleção circular do próximo jogador |
-| `backend/src/utils/sendToAllAndHideOwnLabel.js` | Emissão individual com a identidade própria oculta |
-| `backend/src/utils/states.js` | Estados exportados do servidor: WAITING e STARTED |
-| `backend/test/game.test.js` | Partida real automatizada, CORS e regressão de desconexão |
+`packages/shared` compila os contratos em ESM e CommonJS, com declarações TypeScript. O frontend e o backend usam os mesmos schemas Zod. TypeScript 5.9 foi mantido por compatibilidade com o intervalo oficialmente suportado pelo typescript-eslint instalado; as versões principais das aplicações foram atualizadas e estão fixadas no lockfile.
 
-## Protocolo Socket.IO
+## Máquina de estados
 
-| Direção | Evento | Dados / efeito |
-| --- | --- | --- |
-| Servidor → cliente | `me` | ID do socket |
-| Cliente → servidor | `enter` | Nome como string; entrada na partida em espera |
-| Servidor → cliente | `users` | Array de `{ id, name, label }`, com identidade própria oculta |
-| Cliente → servidor | `setLabel` | String com a identidade do próximo jogador |
-| Cliente → servidor | `start` | Sem payload; valida jogadores e identidades |
-| Servidor → clientes | `started` | Partida iniciada |
-| Cliente → servidor | `restart` | Sem payload; limpa as identidades |
-| Servidor → clientes | `restarted` | Retorno à espera |
-| Servidor → cliente | `error` | Mensagem de erro do jogo como string |
+```mermaid
+stateDiagram-v2
+  [*] --> lobby: criar sala
+  lobby --> assigning: anfitrião inicia / todos prontos e conectados
+  assigning --> playing: todas as identidades enviadas
+  assigning --> lobby: alguém sai
+  playing --> playing: passar / tempo acabou / acerto
+  playing --> finished: todos os participantes restantes acertaram
+  finished --> lobby: anfitrião prepara outra rodada
+  playing --> lobby: anfitrião encerra a rodada
+  assigning --> lobby: anfitrião encerra a rodada
+```
 
-Não há endpoints REST, banco de dados, autenticação, cadastro, placar ou resolução automática dos palpites. O servidor HTTP existe para o transporte do Socket.IO.
+A ordem de entrada determina a atribuição circular de identidades. A lista não muda enquanto as pessoas escolhem cartas; uma saída nessa fase invalida a distribuição e retorna à espera. Durante o jogo, quem sai fica marcado como ausente na rodada, sem redistribuir identidades já vistas. A próxima rodada elimina esses lugares antigos.
 
-## Limitações atuais
+O tempo é calculado no servidor. O navegador mostra uma projeção com ajuste de relógio e nunca decide sozinho que uma vez terminou. Uma confirmação de acerto deve vir de outro participante. Qualquer participante da mesa pode confirmar o palpite falado; não há reconhecimento automático de voz ou validação semântica do palpite.
 
-- Há apenas uma partida global por processo; não existem salas nem isolamento de grupos.
-- Todos os dados são perdidos ao reiniciar o processo. Múltiplas instâncias não compartilham estado.
-- Falta validação robusta dos payloads, limite de tamanho, proteção contra entradas duplicadas e verificação de participação em todos os comandos. Um cliente conectado pode tentar iniciar/reiniciar a partida; isto requer endurecimento antes de uso público amplo.
-- A reconexão gera outro ID e não restaura a participação anterior automaticamente.
-- A saída de jogadores durante a partida não recalcula identidades nem encerra a rodada automaticamente, exceto quando todos saem.
-- A string `hidden` é um marcador de protocolo e pode conflitar com uma identidade escolhida literalmente com esse texto.
-- Next 11, React 17 e Material UI 4 são versões legadas. A migração manteve as versões e não constitui uma atualização de segurança das dependências.
-- O lint herdado aponta uma dependência ausente de `useEffect` em `ShowUsers`; esse componente merece revisão na modernização da interface.
+## Identidade e privacidade
 
-## Migração
+O cliente gera um token criptográfico de 256 bits e o armazena no navegador. A criação e a entrada vinculam o hash SHA-256 desse token a um jogador UUID e a uma sala. O backend não armazena o token em texto claro e não usa `socket.id` como identidade da pessoa.
 
-Base do frontend: `4f8681026f190060055e002bfb6cffc704fab22b`.
-Base do backend: `487faf8b2e7eab2f28480a9f926eb51059dc0223`.
+Cada cliente recebe uma projeção própria do estado. A identidade própria é `null` até o acerto ou o resultado; durante a atribuição, todas as identidades são ocultadas, exceto a que a própria pessoa escreveu para outra. A identidade secreta nunca é enviada para ser apenas escondida com CSS. A string `hidden` deixou de ser um marcador e pode ser uma identidade literal.
 
-O frontend foi movido para `frontend/`. O histórico completo do backend foi unido por merge de históricos independentes e sua árvore incorporada em `backend/`. Os commits originais continuam ancestrais da branch principal; nenhum submódulo ou segundo repositório é necessário para executar o projeto.
+O token é uma credencial de acesso. Use HTTPS, não registre tokens em logs e mantenha o volume/banco fora do repositório. Não há contas de usuário ou dados pessoais além do apelido escolhido. Limpar o armazenamento do navegador perde a credencial; o código da sala sozinho não recupera um lugar antigo. Uma nova aba com a mesma sessão substitui a conexão anterior para evitar ações concorrentes de duas telas.
 
-A configuração foi consolidada em Yarn Workspaces com lockfile único. A URL fixa do Heroku foi substituída por variável de ambiente. Durante a validação foram corrigidos a ausência de export dos estados do backend, a remoção indevida de jogador quando um visitante desconecta, o reset da partida vazia e o listener de jogadores que capturava o estado inicial da tela.
+## Protocolo
+
+| Evento                 | Direção            | Responsabilidade                                  |
+| ---------------------- | ------------------ | ------------------------------------------------- |
+| handshake `auth.token` | cliente → servidor | Identificação da sessão antes de mensagens        |
+| `command`              | cliente → servidor | Comando validado com UUID de solicitação e ACK    |
+| `sync`                 | cliente → servidor | Busca da projeção atual com ACK                   |
+| `ping`                 | cliente → servidor | Medição de tempo de ida e volta                   |
+| `room:state`           | servidor → cliente | Snapshot completo e privado com versão monotônica |
+| `session:replaced`     | servidor → cliente | Aviso de que outra aba assumiu a sessão           |
+| `room:closed`          | servidor → cliente | Sala encerrada/expirada                           |
+
+Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin`, `identity:set`, `turn:pass`, `turn:solve`, `room:restart`, `room:leave`.
+
+## Recuperação e consistência
+
+- O Socket.IO inicia em HTTP polling e promove a conexão para WebSocket quando disponível, mantendo polling quando a promoção é bloqueada; o cliente reconecta com espera progressiva e aleatória entre tentativas.
+- Há heartbeat no servidor, sincronização após conectar e ao voltar à aba, atualização de presença e medição de latência. A recuperação do transporte é complementada pela recuperação da aplicação.
+- Ao perder a rede, a tela conserva o último snapshot e bloqueia comandos. O lugar permanece reservado por 120 segundos. Se o armazenamento estiver bloqueado, o navegador informa que a recarga pode perder a sessão.
+- Cada comando tem um `requestId`. O servidor guarda um recibo junto à mutação em transação. Se o ACK se perde, o cliente reenvia o mesmo ID uma vez: a alteração não é aplicada de novo. O ID reutilizado com outro conteúdo é rejeitado.
+- `identity:set` inclui a rodada. Ações de turno incluem um `turnId` único. Um clique atrasado não confirma o acerto da próxima pessoa nem altera uma rodada futura.
+- Snapshots antigos não substituem uma versão mais nova no cliente.
+- Um reinício carrega as salas do SQLite, marca todos como offline e reabre a janela de recuperação. O tempo da vez atual é reiniciado para que a parada não consuma todo o turno.
+- Se ninguém elegível está conectado, a próxima vez fica pausada até alguém voltar. Um anfitrião pode avançar uma vez; uma pessoa desconectada é removida após a janela de recuperação.
+
+## Limites explícitos
+
+Uma instância é a autoridade de cada sala. Duas instâncias com processos/arquivos separados não compartilham partida. O simples uso de Redis Pub/Sub não torna as transações distribuídas nem garante recuperação. Antes de múltiplas réplicas, implemente ownership de salas ou estado/locks transacionais centralizados e um adapter compatível.
+
+Salas inativas expiram em 24 horas. Recibos são mantidos por 24 horas. O histórico de atividade de cada sala guarda os últimos 25 eventos. As ações são limitadas por sessão e tentativas de conexão por endereço de origem; proxies devem ser considerados ao calibrar esses limites. O jogo não inclui moderação automática, chat, áudio/vídeo, matchmaking público ou ranking global.
+
+## Verificação
+
+Vitest exercita regras, permissões, segredo, repetição segura, versões de turno, limite de pessoas, retorno ao lobby, cronômetro, expiração, migração do anfitrião e persistência. A integração sobe um NestJS real com SQLite e conecta clientes WebSocket e polling. Playwright joga uma rodada entre dois contextos, testa refresh/offline e as telas em vários tamanhos; axe-core verifica acessibilidade nas telas cobertas.
+
+## Histórico
+
+O repositório `whoami` continua oficial. Os históricos anteriores do frontend (`4f86810`) e da API (`487faf8`) permanecem ancestrais. A versão 1 do monorepo foi consolidada em `de63a03`; a versão 2 substitui Next.js/Material UI/JavaScript, sem apagar esses commits.

@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './styles/theme.css';
+@import './styles/shell.css';
+@import './styles/home.css';
+@import './styles/room.css';
+@import './styles/responsive.css';
