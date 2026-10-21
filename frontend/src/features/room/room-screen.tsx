@@ -17,7 +17,7 @@ import { Results } from '@/features/room/results'
 const phaseLabels = {
   lobby: 'Sala de espera',
   assigning: 'Identidades secretas',
-  playing: 'Na mesa',
+  playing: 'Em jogo',
   finished: 'Fim da rodada',
 }
 
@@ -40,7 +40,7 @@ export function RoomScreen({ room }: { room: RoomView }) {
           <h1 ref={heading} tabIndex={-1}>
             {phaseLabels[room.phase]}
             <span className="room-round">
-              {room.round > 0 ? `Rodada ${room.round}` : 'Que bom te ver por aqui.'}
+              {room.round > 0 ? `Rodada ${room.round}` : 'Aguardando o início'}
             </span>
           </h1>
         </div>
@@ -76,8 +76,8 @@ export function RoomScreen({ room }: { room: RoomView }) {
       </div>
       <div className="room-bottom-note">
         <span>
-          <LockSimple size={15} aria-hidden="true" />O segredo está seguro. Sua própria carta só é
-          revelada no acerto ou no fim.
+          <LockSimple size={15} aria-hidden="true" />
+          Sua carta só aparece para você quando acertar ou quando a rodada terminar.
         </span>
         {room.hostId === room.selfId && room.phase !== 'lobby' && room.phase !== 'finished' && (
           <Restart disabled={disabled} />

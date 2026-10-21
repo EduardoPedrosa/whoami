@@ -1,4 +1,4 @@
-# Whoami
+# Quem sou eu?
 
 **Todo mundo sabe. Menos você.** Um jogo de “Quem sou eu?” para 2 a 12 amigos, em salas privadas. Cada pessoa escolhe a identidade de outra; perguntas de sim ou não revelam o segredo. Joguem pessoalmente ou em uma chamada de voz.
 
@@ -85,7 +85,7 @@ O volume `game-data` mantém o SQLite. Faça backups consistentes com a API `bac
 
 ## Como a partida funciona
 
-1. Crie a sala e compartilhe o convite. Escolha o universo e o tempo de cada vez.
+1. Crie a sala e compartilhe o convite. Escolha a categoria e o tempo de cada turno.
 2. Todos marcam **Estou pronto**; o anfitrião inicia a rodada.
 3. Cada pessoa escolhe quem o próximo jogador será. O jogo começa quando todos enviam.
 4. Na sua vez, faça perguntas de sim ou não em voz alta. Continue até acertar, passar ou acabar o tempo.

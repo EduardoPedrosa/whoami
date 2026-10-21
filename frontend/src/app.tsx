@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { AnimatePresence, motion, MotionConfig } from 'motion/react'
-import { ArrowUpRight, X, WarningCircle } from '@phosphor-icons/react'
+import { X, WarningCircle } from '@phosphor-icons/react'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { HelpDialog } from '@/components/help-dialog'
@@ -19,7 +19,7 @@ export function App() {
   }, [])
   const roomCode = room?.code
   useEffect(() => {
-    document.title = roomCode ? `${roomCode} · Whoami` : 'Whoami · Quem você é dessa vez?'
+    document.title = roomCode ? `${roomCode} · Quem sou eu?` : 'Quem sou eu?'
   }, [roomCode])
   return (
     <MotionConfig reducedMotion="user">
@@ -62,17 +62,15 @@ export function App() {
             fallback={
               <main id="main-content" className="room-loading" role="status">
                 <div className="loading-card" />
-                <p>Preparando sua mesa…</p>
+                <p>Carregando a sala…</p>
               </main>
             }
           >
             {room ? <RoomScreen room={room} /> : <Home />}
           </Suspense>
           <footer className="site-footer">
-            <span>Feito para boas companhias.</span>
-            <span className="footer-question">
-              Quem você é dessa vez? <ArrowUpRight size={15} aria-hidden="true" />
-            </span>
+            <span>Jogue com seus amigos.</span>
+            <span className="footer-question">Sem cadastro.</span>
           </footer>
         </div>
       </TooltipProvider>

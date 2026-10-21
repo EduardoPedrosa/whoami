@@ -31,11 +31,11 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
             </span>
           )}
         </div>
-        <h2>{room.players.length < 2 ? 'Falta só a sua companhia.' : 'A turma está chegando.'}</h2>
+        <h2>{room.players.length < 2 ? 'Convide seus amigos.' : 'Todo mundo por aqui?'}</h2>
         <p>
           {room.players.length < 2
-            ? 'Convide pelo menos mais uma pessoa. A diversão começa quando a mesa se reúne.'
-            : 'Escolham o clima da rodada e avisem quando estiverem prontos. A próxima identidade pode surpreender.'}
+            ? 'Você precisa de pelo menos mais uma pessoa para jogar. Compartilhe o link ou o código da sala.'
+            : 'Escolham a categoria e o tempo de cada turno. Depois, cada pessoa confirma que está pronta.'}
         </p>
       </div>
       <Settings room={room} disabled={disabled} />

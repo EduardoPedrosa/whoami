@@ -50,10 +50,10 @@ export function ConnectionBanner() {
           {!storageAvailable
             ? 'Seu navegador bloqueou o armazenamento.'
             : connection === 'offline'
-              ? 'A internet deu uma pausa.'
+              ? 'Você está sem internet.'
               : connection === 'replaced'
                 ? 'Você abriu a partida em outra aba.'
-                : 'Encontrando o caminho de volta…'}
+                : 'Reconectando…'}
         </strong>
         <p>
           {!storageAvailable
@@ -62,7 +62,7 @@ export function ConnectionBanner() {
               ? 'Continue por lá ou retome sua sessão aqui.'
               : room
                 ? 'Seu lugar fica reservado por 2 minutos. Vamos sincronizar tudo ao reconectar.'
-                : 'Conectando à mesa. Você poderá entrar assim que a conexão voltar.'}
+                : 'Conectando ao jogo. Você poderá entrar assim que a conexão voltar.'}
         </p>
       </div>
       {connection === 'replaced' && (

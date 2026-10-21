@@ -141,7 +141,7 @@ describe('secrets, turns and scoring', () => {
   })
   it('requires another person to confirm and rejects stale concurrent actions', () => {
     const r = playing()
-    expect(() => send(alice, { type: 'turn:solve', turnId: r.turnId! })).toThrow('Outra pessoa')
+    expect(() => send(alice, { type: 'turn:solve', turnId: r.turnId! })).toThrow('Outro jogador')
     const solved = room(send(bob, { type: 'turn:solve', turnId: r.turnId! }))
     expect(solved.players[0]?.solved).toBe(true)
     expect(solved.players[0]?.score).toBe(1)

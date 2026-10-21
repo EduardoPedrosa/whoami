@@ -61,16 +61,15 @@ export function Home() {
             transition={{ duration: 0.45 }}
           >
             <div className="home-eyebrow">
-              <span className="eyebrow-line" /> UMA BOA DESCULPA PARA REUNIR OS AMIGOS
+              <span className="eyebrow-line" /> JOGUE COM OS AMIGOS
             </div>
             <h1 id="home-title">
-              Todo mundo sabe.
-              <br />
-              <span>Menos você.</span>
+              Quem sou <span>eu?</span>
             </h1>
             <p className="hero-description">
-              Um nome secreto. As perguntas certas.
-              <br />E seus amigos tentando não entregar tudo.
+              Todo mundo sabe.
+              <br />
+              Menos você.
             </p>
           </motion.div>
           <motion.div
@@ -107,7 +106,7 @@ export function Home() {
             </div>
             <form onSubmit={submit} className="launcher-form" noValidate>
               <div className="space-y-2">
-                <Label htmlFor="player-name">Como a mesa te chama?</Label>
+                <Label htmlFor="player-name">Seu nome</Label>
                 <Input
                   id="player-name"
                   name="name"
@@ -126,9 +125,7 @@ export function Home() {
                 )}
               </div>
               <fieldset>
-                <legend className="avatar-legend">
-                  Escolha sua cara <span>pode ser a de quem desconfia de tudo</span>
-                </legend>
+                <legend className="avatar-legend">Escolha seu avatar</legend>
                 <div className="avatar-picker">
                   {AVATARS.map((option) => (
                     <button
@@ -160,7 +157,7 @@ export function Home() {
                     name="roomCode"
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\s/g, '').toUpperCase())}
-                    placeholder="EX.: ABC234"
+                    placeholder="ABC234"
                     maxLength={6}
                     autoCapitalize="characters"
                     autoComplete="off"
@@ -178,7 +175,7 @@ export function Home() {
               )}
               <Button type="submit" size="lg" className="launcher-submit" disabled={disabled}>
                 {pending
-                  ? 'Preparando sua mesa…'
+                  ? 'Entrando na sala…'
                   : mode === 'create'
                     ? 'Bora jogar'
                     : 'Entrar na sala'}
@@ -205,7 +202,7 @@ export function Home() {
             src="/identity-cards.webp"
             width="1100"
             height="1100"
-            alt="Cartas de identidades com um astronauta, um ponto de interrogação e um alienígena verde."
+            alt="Cartas de identidades com um astronauta, um ponto de interrogação e um alienígena azul."
             fetchPriority="high"
           />
         </motion.div>
@@ -213,14 +210,14 @@ export function Home() {
       <section className="home-bottom" aria-label="A regra é simples">
         <span className="bottom-number">?</span>
         <p>
-          Você pode ser qualquer pessoa.
+          Seus amigos escolhem quem você é.
           <br />
-          <strong>Só não pode olhar a própria carta.</strong>
+          <strong>Descubra fazendo perguntas.</strong>
         </p>
         <div className="bottom-rule">
-          Perguntas de sim ou não.
+          Só vale responder
           <br />
-          Risadas sem limite.
+          sim ou não.
         </div>
       </section>
     </main>

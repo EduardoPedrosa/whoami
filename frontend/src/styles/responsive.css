@@ -6,7 +6,7 @@
 }
 @media (max-width: 1150px) {
   .app-shell {
-    width: calc(100% - 64px);
+    --page-gutter: 32px;
   }
   .hero-copy h1 {
     font-size: 58px;
@@ -88,10 +88,11 @@
 }
 @media (max-width: 767px) {
   .app-shell {
-    width: calc(100% - 40px);
+    --page-gutter: 20px;
   }
   .site-header {
     height: 82px;
+    padding-block: 16px;
   }
   .site-header nav {
     gap: 12px;
@@ -475,7 +476,7 @@
 }
 @media (max-width: 374px) {
   .app-shell {
-    width: calc(100% - 28px);
+    --page-gutter: 16px;
   }
   .hero-copy h1 {
     font-size: 38px;
@@ -492,9 +493,6 @@
   }
   .home-eyebrow {
     font-size: 7px;
-  }
-  .connection-status > span:not(.latency) {
-    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -563,5 +561,19 @@ h1[tabindex='-1'] {
   #main-content,
   h1[tabindex='-1'] {
     scroll-margin-top: 105px;
+  }
+}
+
+@media (max-width: 420px) {
+  .connection-status > span:not(.latency) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 }

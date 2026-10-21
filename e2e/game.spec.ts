@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright'
 
 async function create(page: Page, name = 'Alice') {
   await page.goto('/')
-  await page.getByLabel('Como a mesa te chama?').fill(name)
+  await page.getByLabel('Seu nome').fill(name)
   await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeEnabled()
   await page.getByRole('button', { name: 'Bora jogar' }).click()
   await expect(page.getByRole('heading', { name: /Sala de espera/ })).toBeVisible()
@@ -11,7 +11,7 @@ async function create(page: Page, name = 'Alice') {
 }
 async function join(page: Page, code: string, name = 'Bob') {
   await page.goto(`/?sala=${code}`)
-  await page.getByLabel('Como a mesa te chama?').fill(name)
+  await page.getByLabel('Seu nome').fill(name)
   await page.getByRole('button', { name: 'Avatar Fantasma', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Entrar na sala', exact: true })).toBeEnabled()
   await page.getByRole('button', { name: 'Entrar na sala', exact: true }).click()
@@ -21,6 +21,35 @@ async function assertNoOverflow(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   )
+}
+
+async function assertDialogFits(page: Page) {
+  const dialog = page.getByRole('dialog').or(page.getByRole('alertdialog'))
+  await expect(dialog).toHaveCSS('opacity', '1')
+  const box = (await dialog.boundingBox())!
+  const viewport = page.viewportSize()!
+  expect(box.x).toBeGreaterThanOrEqual(0)
+  expect(box.y).toBeGreaterThanOrEqual(0)
+  expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
+  expect(box.y + box.height).toBeLessThanOrEqual(viewport.height)
+}
+
+async function assertMobileLayouts(page: Page) {
+  const original = page.viewportSize()!
+  for (const viewport of [
+    { width: 320, height: 700 },
+    { width: 375, height: 812 },
+    { width: 812, height: 375 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await assertNoOverflow(page)
+    for (const button of await page.locator('.room-stage button:visible').all()) {
+      const box = await button.boundingBox()
+      expect(box!.x).toBeGreaterThanOrEqual(0)
+      expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width)
+    }
+  }
+  await page.setViewportSize(original)
 }
 
 async function assertAccessible(page: Page) {
@@ -41,7 +70,12 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
   browser,
 }) => {
   const host = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
-  const guest = await browser.newContext({ viewport: { width: 390, height: 844 } })
+  const guest = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    deviceScaleFactor: 3,
+  })
   const a = await host.newPage()
   const b = await guest.newPage()
   const errors: string[] = []
@@ -51,6 +85,12 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     const code = await create(a)
     await join(b, code)
     await expect(a.locator('.player-roster li')).toHaveCount(2)
+    await assertMobileLayouts(b)
+    await b.setViewportSize({ width: 812, height: 375 })
+    await b.getByRole('button', { name: /Convidar amigos/ }).click()
+    await assertDialogFits(b)
+    await b.getByRole('button', { name: 'Fechar', exact: true }).click()
+    await b.setViewportSize({ width: 390, height: 844 })
     await a.screenshot({ path: 'test-results/lobby-desktop.png', fullPage: true })
     await b.screenshot({ path: 'test-results/lobby-mobile.png', fullPage: true })
     await a.getByRole('button', { name: 'Estou pronto', exact: true }).click()
@@ -58,12 +98,14 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     await expect(a.getByRole('button', { name: 'Começar rodada' })).toBeEnabled()
     await a.getByRole('button', { name: 'Começar rodada' }).click()
     await expect(a.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
+    await expect(b.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
+    await assertMobileLayouts(b)
     await assertAccessible(a)
     await a.getByLabel('Quem essa pessoa vai ser?').fill('Sherlock Holmes')
-    await a.getByRole('button', { name: 'Guardar identidade' }).click()
-    await expect(a.getByText('Segredo guardado.')).toBeVisible()
+    await a.getByRole('button', { name: 'Enviar identidade' }).click()
+    await expect(a.getByText('Identidade enviada.')).toBeVisible()
     await b.getByLabel('Quem essa pessoa vai ser?').fill('Uma capivara')
-    await b.getByRole('button', { name: 'Guardar identidade' }).click()
+    await b.getByRole('button', { name: 'Enviar identidade' }).click()
     await expect(a.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
     await expect(a.locator('.identity-own')).not.toContainText('Uma capivara')
     await expect(b.locator('.identity-own')).not.toContainText('Sherlock Holmes')
@@ -75,6 +117,7 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     )
     await assertNoOverflow(a)
     await assertNoOverflow(b)
+    await assertMobileLayouts(b)
     await assertAccessible(a)
     await assertAccessible(b)
     await a.screenshot({ path: 'test-results/playing-desktop.png', fullPage: true })
@@ -83,18 +126,22 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     await expect(b.getByRole('heading', { name: 'É a vez de Alice.' })).toBeVisible()
     await expect(b.locator('.identity-own')).not.toContainText('Sherlock Holmes')
     await guest.setOffline(true)
-    await expect(b.getByText('A internet deu uma pausa.')).toBeVisible()
+    await expect(b.getByText('Você está sem internet.')).toBeVisible()
     await guest.setOffline(false)
-    await expect(b.getByText('A internet deu uma pausa.')).toHaveCount(0)
+    await expect(b.getByText('Você está sem internet.')).toHaveCount(0)
     await expect(b.locator('.connection-status')).toContainText('Conectado')
+    await b.setViewportSize({ width: 812, height: 375 })
     await b.getByRole('button', { name: 'Confirmar acerto' }).click()
+    await assertDialogFits(b)
     await b.getByRole('button', { name: 'Sim, acertou!' }).click()
+    await b.setViewportSize({ width: 390, height: 844 })
     await expect(b.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
     await expect(a.locator('.identity-own')).toContainText('Uma capivara')
     await a.getByRole('button', { name: 'Confirmar acerto' }).click()
     await a.getByRole('button', { name: 'Sim, acertou!' }).click()
-    await expect(a.getByRole('heading', { name: 'Vocês se descobriram.' })).toBeVisible()
-    await expect(b.getByRole('heading', { name: 'Vocês se descobriram.' })).toBeVisible()
+    await expect(a.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
+    await expect(b.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
+    await assertMobileLayouts(b)
     await assertAccessible(a)
     await a.screenshot({ path: 'test-results/results-desktop.png', fullPage: true })
     await a.getByRole('button', { name: 'Mais uma rodada' }).click()
@@ -125,7 +172,21 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
   ]) {
     await page.setViewportSize(size)
     await assertNoOverflow(page)
+    const header = page.locator('.site-header')
+    expect(
+      await header.evaluate((element) => parseFloat(getComputedStyle(element).paddingLeft)),
+    ).toBeGreaterThan(0)
+    const headerBox = (await header.boundingBox())!
+    for (const content of [page.locator('.brand'), header.locator('nav')]) {
+      const box = (await content.boundingBox())!
+      expect(box.x).toBeGreaterThanOrEqual(headerBox.x + 12)
+      expect(box.x + box.width).toBeLessThanOrEqual(headerBox.x + headerBox.width - 12)
+    }
     await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeVisible()
+    await page.getByRole('button', { name: 'Como jogar' }).click()
+    await assertDialogFits(page)
+    await page.getByRole('button', { name: 'Entendi, vamos jogar' }).click()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
     await page.screenshot({
       path: `test-results/home-${size.width}x${size.height}.png`,
       fullPage: true,
@@ -134,7 +195,7 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 375, height: 812 })
   await page.getByRole('button', { name: 'Entrar com código' }).click()
-  await page.getByLabel('Como a mesa te chama?').fill('Carla')
+  await page.getByLabel('Seu nome').fill('Carla')
   await page.getByLabel('Código da sala').fill('ABC234')
   await page.getByRole('button', { name: 'Entrar na sala', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('Essa sala não existe')

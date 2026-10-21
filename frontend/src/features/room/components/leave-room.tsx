@@ -30,7 +30,7 @@ export function LeaveRoom() {
       </Tooltip>
       <AlertDialogContent className="rounded-3xl">
         <AlertDialogHeader>
-          <AlertDialogTitle>Sair desta mesa?</AlertDialogTitle>
+          <AlertDialogTitle>Sair da sala?</AlertDialogTitle>
           <AlertDialogDescription>
             Seu lugar será liberado. Para voltar, você precisará entrar novamente enquanto a sala
             estiver na espera.

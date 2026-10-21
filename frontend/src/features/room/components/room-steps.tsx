@@ -6,7 +6,7 @@ export function RoomSteps({ phase }: { phase: RoomView['phase'] }) {
   const current = phase === 'lobby' ? 0 : phase === 'assigning' ? 1 : 2
   return (
     <ol className="room-steps" aria-label="Etapas da partida">
-      {['Reúna a mesa', 'Escolha as identidades', 'Descubra quem é'].map((label, i) => (
+      {['Entre na sala', 'Escolha as identidades', 'Descubra quem é'].map((label, i) => (
         <li
           key={label}
           aria-current={i === current ? 'step' : undefined}

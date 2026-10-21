@@ -24,7 +24,7 @@ export function Restart({ disabled }: { disabled: boolean }) {
       </AlertDialogTrigger>
       <AlertDialogContent className="rounded-3xl">
         <AlertDialogHeader>
-          <AlertDialogTitle>Reorganizar a mesa?</AlertDialogTitle>
+          <AlertDialogTitle>Encerrar esta rodada?</AlertDialogTitle>
           <AlertDialogDescription>
             A rodada atual será encerrada e as identidades apagadas. Os pontos já conquistados serão
             mantidos.

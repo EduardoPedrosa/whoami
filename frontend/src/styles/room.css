@@ -50,7 +50,7 @@
 }
 .invite-code {
   margin-left: 6px;
-  border-left: 1px solid #647254;
+  border-left: 1px solid #455b85;
   padding-left: 13px;
   font: 12px var(--font-code);
   letter-spacing: 2px;
@@ -61,8 +61,8 @@
   text-align: center;
   font: 40px var(--font-code);
   letter-spacing: 10px;
-  background: #111b13;
-  border: 1px dashed #65804c;
+  background: #10192e;
+  border: 1px dashed #7285ac;
   border-radius: 16px;
   color: var(--primary);
   margin: 10px 0;
@@ -78,20 +78,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #a0ad9f;
+  color: #bccbe8;
   font-size: 11px;
 }
 .room-steps li > span:first-child {
   width: 23px;
   height: 23px;
-  border: 1px solid #7b897a;
+  border: 1px solid #7285ac;
   border-radius: 50%;
   display: inline-grid;
   place-items: center;
   font: 10px var(--font-code);
 }
 .room-steps .step-active {
-  color: #e3edcb;
+  color: #d6e1f8;
 }
 .room-steps .step-active > span:first-child {
   background: var(--primary);
@@ -117,7 +117,7 @@
 }
 .room-sidebar {
   border: 1px solid var(--border);
-  background: #151e17;
+  background: #17233c;
   border-radius: 24px;
   overflow: hidden;
 }
@@ -145,7 +145,7 @@
   align-items: center;
   gap: 10px;
   padding: 13px 5px;
-  border-bottom: 1px solid #2a362c;
+  border-bottom: 1px solid #25365a;
 }
 .player-roster li:last-child {
   border: 0;
@@ -181,13 +181,13 @@
   margin: 18px 16px;
   padding: 16px;
   border-radius: 16px;
-  background: #222d21;
+  background: #1d2b49;
   display: flex;
   gap: 10px;
 }
 .table-tip > svg {
   flex-shrink: 0;
-  color: #d6dfc0;
+  color: #d6e1f8;
   margin-top: 2px;
 }
 .table-tip strong {
@@ -208,7 +208,7 @@
 }
 .activity-section h3 {
   font-size: 11px;
-  color: #c3ccb9;
+  color: #bccbe8;
   margin-bottom: 16px;
   font-weight: 500;
 }
@@ -229,7 +229,7 @@
   height: 5px;
   width: 5px;
   flex-shrink: 0;
-  background: #8d9e82;
+  background: #a5b5d5;
   border-radius: 50%;
   margin-top: 6px;
 }
@@ -269,11 +269,11 @@
 .empty-avatar {
   width: 47px;
   height: 47px;
-  border: 1px dashed #758565;
+  border: 1px dashed #7285ac;
   border-radius: 16px;
   display: inline-grid;
   place-items: center;
-  color: #bdc7ad;
+  color: #bccbe8;
   margin-left: 9px;
 }
 .lobby-welcome h2 {
@@ -301,7 +301,7 @@
 .room-settings label {
   font-size: 12px;
   font-weight: 400;
-  color: #d7dfd1;
+  color: #d6e1f8;
 }
 .room-settings select {
   min-height: 48px;
@@ -309,7 +309,7 @@
   border: 1px solid var(--input);
   padding: 0 12px;
   color: var(--foreground);
-  background: #101b13;
+  background: #10192e;
   font-size: 13px;
   width: 100%;
 }
@@ -336,7 +336,7 @@
   align-items: center;
 }
 .lobby-rules svg {
-  color: #caddb4;
+  color: #bccbe8;
   flex-shrink: 0;
 }
 .lobby-rules p {
@@ -416,8 +416,8 @@
   display: inline-flex;
   padding: 6px 10px;
   border-radius: 8px;
-  background: #2c3824;
-  color: #d5e9b2;
+  background: #25365a;
+  color: #d6e1f8;
 }
 .assignment-heading h2 {
   font-size: 27px;
@@ -434,11 +434,11 @@
   max-width: 405px;
   margin: 0 auto;
   padding: 24px;
-  border: 1px solid #9aa88c;
+  border: 1px solid #a5b5d5;
   border-radius: 20px;
-  background: #e7edda;
-  color: #1d2b1a;
-  box-shadow: 4px 6px 0 #0b150d;
+  background: #d6e1f8;
+  color: #1d2b49;
+  box-shadow: 4px 6px 0 #0b1020;
   transform: rotate(-1deg);
 }
 .assignment-card-top {
@@ -447,7 +447,7 @@
   align-items: center;
   font: 9px var(--font-code);
   letter-spacing: 1.3px;
-  color: #4f6147;
+  color: #455b85;
 }
 .assignment-person {
   display: flex;
@@ -456,7 +456,7 @@
   margin: 25px 0;
 }
 .assignment-person .player-avatar {
-  border: 1px solid #80906c;
+  border: 1px solid #7285ac;
 }
 .assignment-person h3 {
   font-size: 28px;
@@ -471,39 +471,39 @@
 }
 .assignment-form label {
   font-size: 13px;
-  color: #33432b;
+  color: #25365a;
 }
 .assignment-form input {
-  background: #f4f6eb;
-  color: #1d2b1a;
-  border-color: #738766;
+  background: #eff4ff;
+  color: #1d2b49;
+  border-color: #7285ac;
   box-shadow: none;
 }
 .assignment-form input::placeholder {
-  color: #53664a;
+  color: #455b85;
 }
 .assignment-form p {
   font-size: 10px;
   line-height: 1.6;
-  color: #475b3e;
+  color: #34476b;
 }
 .assignment-form .field-error {
   color: #9c202c;
 }
 .assignment-form button {
-  background: #263b20;
-  color: #f2f6ea;
+  background: #1d2b49;
+  color: #eff4ff;
   margin-top: 6px;
 }
 .assignment-form button:hover {
-  background: #354c2d;
+  background: #25365a;
 }
 .assignment-confirmed {
   text-align: center;
   padding: 10px 0 0;
 }
 .assignment-confirmed > svg {
-  color: #4a682e;
+  color: #34476b;
   margin: 0 auto 12px;
 }
 .assignment-confirmed h4 {
@@ -518,14 +518,14 @@
 .assignment-confirmed > span {
   display: block;
   font-size: 11px;
-  color: #53664a;
+  color: #455b85;
   margin-top: 10px;
 }
 .assignment-confirmed > button {
   display: flex;
   margin: 12px auto 0;
   font-size: 11px;
-  color: #3c552f;
+  color: #34476b;
 }
 .suggestion-area {
   display: flex;
@@ -533,7 +533,7 @@
   margin-top: 12px;
 }
 .suggestion-area button {
-  color: #bccda7;
+  color: #bccbe8;
   font-size: 11px;
 }
 .assignment-progress {
@@ -576,7 +576,7 @@
 }
 .assignment-progress > p {
   font-size: 12px;
-  color: #bbc9ac;
+  color: #bccbe8;
 }
 .assignment-progress strong {
   font-weight: 500;
@@ -604,7 +604,7 @@
 .turn-copy > span {
   font: 9px var(--font-code);
   letter-spacing: 1.3px;
-  color: #c2d7a6;
+  color: #bccbe8;
 }
 .turn-copy h2 {
   font-size: 25px;
@@ -626,10 +626,10 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  border: 1px solid #52603f;
+  border: 1px solid #34476b;
   border-radius: 12px;
   padding: 12px;
-  background: #26321e;
+  background: #1d2b49;
   color: var(--primary);
   flex-shrink: 0;
 }
@@ -655,10 +655,10 @@
 }
 .identity-card {
   position: relative;
-  border: 1px solid #697b59;
+  border: 1px solid #7285ac;
   border-radius: 20px;
-  background: #cbd6b4;
-  color: #26351c;
+  background: #bccbe8;
+  color: #1d2b49;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -669,7 +669,7 @@
   align-items: center;
   gap: 10px;
   padding: 17px 15px;
-  border-bottom: 1px solid #afbd96;
+  border-bottom: 1px solid #bccbe8;
 }
 .identity-card-header > div {
   flex: 1;
@@ -699,7 +699,7 @@
 .identity-card-header div > span {
   display: block;
   font-size: 9px;
-  color: #40552f;
+  color: #34476b;
   margin-top: 3px;
 }
 .identity-card-body {
@@ -716,7 +716,7 @@
   font: 8px var(--font-code);
   letter-spacing: 1px;
   margin-bottom: 10px;
-  color: #4a5e36;
+  color: #34476b;
 }
 .identity-card-body h3 {
   font-size: clamp(23px, 2.2vw, 32px);
@@ -731,9 +731,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #afbd96;
+  border-top: 1px solid #bccbe8;
   font-size: 9px;
-  color: #495c37;
+  color: #34476b;
 }
 .identity-card-footer > span {
   display: flex;
@@ -744,19 +744,19 @@
   font: 9px var(--font-code);
 }
 .identity-own {
-  background: #26351d;
-  color: #ebf4df;
-  border-color: #718659;
+  background: #1d2b49;
+  color: #eff4ff;
+  border-color: #7285ac;
 }
 .identity-own .identity-card-header {
-  border-color: #4b6039;
+  border-color: #34476b;
 }
 .identity-own .identity-card-header div > span {
-  color: #bdccac;
+  color: #bccbe8;
 }
 .identity-own .identity-card-footer {
-  border-color: #4b6039;
-  color: #c7d7b3;
+  border-color: #34476b;
+  color: #bccbe8;
 }
 .identity-own .identity-card-body {
   padding: 17px 15px 23px;
@@ -768,7 +768,7 @@
   font-weight: 450;
 }
 .identity-card-body > p {
-  color: #bdccac;
+  color: #bccbe8;
   font-size: 10px;
   line-height: 1.6;
   margin-top: 6px;
@@ -779,17 +779,17 @@
   font-weight: 500;
   line-height: 1;
   margin-bottom: 7px;
-  text-shadow: 2px 3px 0 #0a1803;
+  text-shadow: 2px 3px 0 #0b1020;
 }
 .identity-active {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
 .identity-solved {
-  background: #e4ebd6;
+  background: #d6e1f8;
 }
 .identity-solved.identity-own {
-  background: #334c28;
+  background: #25365a;
 }
 .identity-found {
   font-size: 10px;
@@ -811,7 +811,7 @@
   display: flex;
   gap: 9px;
   align-items: center;
-  color: #c0cfad;
+  color: #bccbe8;
 }
 .turn-hint > svg {
   flex-shrink: 0;
@@ -838,7 +838,7 @@
   display: grid;
   place-items: center;
   color: var(--primary);
-  background: #2a3b20;
+  background: #1d2b49;
   border-radius: 28px;
   margin: 0 auto 22px;
   transform: rotate(-7deg);

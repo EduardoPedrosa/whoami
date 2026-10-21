@@ -21,6 +21,16 @@ Executada em 21/10/2026, macOS/Apple Silicon com Node 22.21.1 e Chrome. O empaco
 
 A auditoria não prevê vulnerabilidades futuras. Os testes não representam teste de carga ou cobertura automática de Safari/iOS/Firefox. O limite de salas é defensivo e não uma capacidade medida. A topologia entregue usa uma instância autoritativa com volume persistente.
 
+## Revisão de texto e paleta azul
+
+O título passou a ser **Quem sou eu?**, com **Todo mundo sabe. Menos você.** como subtítulo. Os textos de entrada, regras, convites, atividade e resultados ficaram mais diretos. A paleta e a arte foram atualizadas para azul; o placeholder do código foi simplificado e o cabeçalho recebeu padding explícito.
+
+Validação desta revisão: 18 testes de backend e 5 testes de navegador aprovados, build Docker e checagens de lint, tipos e formatação aprovados. Os testes de navegador foram executados sobre o build de produção em Nginx + NestJS.
+
+A espera, escolha de identidades, partida e resultados foram conferidos em 320, 375 e 812px, além da página inicial nos demais tamanhos já cobertos. Convite, ajuda e confirmação foram verificados em telas baixas, com rolagem interna. A auditoria axe-core passou após o ajuste de contraste dos textos nas cartas claras. O padding do cabeçalho também passou a ser verificado nos testes de layout.
+
+Uma verificação adicional com eventos de toque em celular emulado passou por criação de sala, abertura/fechamento do convite e saída. Isso não equivale a testes em aparelhos físicos ou Safari/iOS.
+
 ## Antes e depois
 
 ![Interface anterior](../assets/before-desktop.png)

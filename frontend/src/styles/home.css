@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #bec9af;
+  color: #bccbe8;
   margin-bottom: 23px;
 }
 .eyebrow-line {
@@ -49,8 +49,8 @@
   padding: 6px;
   border-radius: 20px;
   border: 1px solid var(--border);
-  background: #17211a;
-  box-shadow: 0 16px 50px #00000018;
+  background: #17233c;
+  box-shadow: 0 16px 50px #02071324;
 }
 .launcher-tabs {
   display: grid;
@@ -76,7 +76,7 @@
     color 0.18s;
 }
 .launcher-tabs button.selected {
-  background: #2a362b;
+  background: #25365a;
   color: var(--foreground);
 }
 .launcher-tabs button:hover {
@@ -93,11 +93,11 @@
   font-weight: 450;
 }
 .launcher-form input {
-  background: #101a13;
+  background: #10192e;
 }
 .avatar-legend {
   font-size: 12px;
-  color: #d9dfd3;
+  color: #d6e1f8;
   margin-bottom: 10px;
 }
 .avatar-legend > span {
@@ -129,7 +129,7 @@
 }
 .avatar-option.avatar-selected {
   border-color: var(--primary);
-  background: #26321c;
+  background: #1d2b49;
 }
 .avatar-check {
   position: absolute;
@@ -149,20 +149,20 @@
   height: 39px;
   flex-shrink: 0;
   border-radius: 12px;
-  color: #d7edb9;
-  background: #3c4c32;
+  color: #dbe7ff;
+  background: #30476f;
 }
 .avatar-1 {
-  color: #f3dfba;
-  background: #514733;
+  color: #e7edff;
+  background: #3c4a79;
 }
 .avatar-2 {
-  color: #d4e5e1;
-  background: #344c44;
+  color: #d5efff;
+  background: #264b68;
 }
 .avatar-3 {
-  color: #e9d3c4;
-  background: #544235;
+  color: #dce4ff;
+  background: #354573;
 }
 .avatar-large {
   width: 64px;
@@ -181,10 +181,10 @@
   font-size: 15px;
   padding-left: 20px;
   padding-right: 20px;
-  box-shadow: 0 3px 0 #7b9631;
+  box-shadow: 0 3px 0 #405ba5;
 }
 .launcher-submit:hover {
-  background: #e0ff65;
+  background: #a1b5ff;
 }
 .game-facts {
   display: flex;
@@ -200,7 +200,7 @@
   gap: 7px;
 }
 .game-facts svg {
-  color: #cad3c3;
+  color: #bccbe8;
 }
 .hero-art {
   position: relative;
@@ -254,7 +254,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  color: #a0ad9f;
+  color: #bccbe8;
   font-size: 11px;
   margin-top: auto;
 }

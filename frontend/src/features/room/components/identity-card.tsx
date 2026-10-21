@@ -45,7 +45,7 @@ export function IdentityCard({
                   ? 'Reconectando…'
                   : active
                     ? 'Fazendo as perguntas'
-                    : 'De olho na mesa'}
+                    : 'Aguardando a vez'}
           </span>
         </div>
         {player.solved ? (
@@ -74,7 +74,7 @@ export function IdentityCard({
               ?
             </span>
             <h3>Sua identidade secreta</h3>
-            <p>Todo mundo sabe. Sua missão é descobrir.</p>
+            <p>Faça perguntas para descobrir quem você é.</p>
           </>
         )}
       </div>
@@ -86,11 +86,11 @@ export function IdentityCard({
               Jogando agora
             </>
           ) : player.solved ? (
-            'Boa, essa foi sua!'
+            'Identidade descoberta'
           ) : self ? (
             'Não vale espiar'
           ) : (
-            'Guarde esse segredo'
+            'Não revele a identidade'
           )}
         </span>
         <span>{String(index + 1).padStart(2, '0')}</span>

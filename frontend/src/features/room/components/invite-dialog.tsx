@@ -37,7 +37,7 @@ export function Invite({ room }: { room: RoomView }) {
       </DialogTrigger>
       <DialogContent className="rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Tem lugar para mais histórias.</DialogTitle>
+          <DialogTitle className="text-2xl">Convide seus amigos</DialogTitle>
           <DialogDescription>
             Envie o link ou peça para seus amigos entrarem com este código.
           </DialogDescription>

@@ -8,7 +8,7 @@ export function PlayerRoster({ room }: { room: RoomView }) {
   return (
     <aside className="room-sidebar">
       <div className="sidebar-heading">
-        <h2>Na mesa</h2>
+        <h2>Jogadores</h2>
         <span>
           {room.players.filter((p) => !p.departed).length}/{MAX_PLAYERS}
         </span>
@@ -66,12 +66,12 @@ export function PlayerRoster({ room }: { room: RoomView }) {
       <div className="table-tip">
         <SpeakerHigh aria-hidden="true" size={21} />
         <div>
-          <strong>O melhor acontece na conversa.</strong>
+          <strong>Joguem conversando</strong>
           <p>Joguem lado a lado ou abram uma chamada de voz. O áudio fica por conta de vocês.</p>
         </div>
       </div>
       <div className="activity-section">
-        <h3>Aconteceu na mesa</h3>
+        <h3>Atividade recente</h3>
         <ul aria-label="Atividade recente">
           {room.activity
             .slice(-4)

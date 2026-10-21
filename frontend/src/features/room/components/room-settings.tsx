@@ -10,7 +10,7 @@ export function Settings({ room, disabled }: { room: RoomView; disabled: boolean
   return (
     <div className="room-settings">
       <div>
-        <Label htmlFor="category">Universo de identidades</Label>
+        <Label htmlFor="category">Categoria</Label>
         <select
           id="category"
           value={room.settings.category}

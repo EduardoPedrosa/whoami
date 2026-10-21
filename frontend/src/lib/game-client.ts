@@ -82,7 +82,7 @@ class GameClient {
     this.socket.on('room:closed', () =>
       this.update({
         room: null,
-        error: 'Essa sala foi encerrada. Crie uma nova mesa para continuar.',
+        error: 'Essa sala foi encerrada. Crie outra sala para continuar.',
       }),
     )
     this.socket.on('disconnect', (reason) => {

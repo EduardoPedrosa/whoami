@@ -95,7 +95,7 @@ export class GameService implements OnModuleInit {
     const wasOffline = !player.online
     player.online = true
     player.disconnectedAt = null
-    if (wasOffline) this.activity(room, `${player.name} voltou para a mesa.`, 'connection')
+    if (wasOffline) this.activity(room, `${player.name} se reconectou.`, 'connection')
     this.save(room)
     return room.code
   }
@@ -194,7 +194,7 @@ export class GameService implements OnModuleInit {
         session = { playerId: player.id, code: room.code }
         this.save(room)
         this.db.saveSession(hash, session)
-        this.activity(room, `${player.name} chegou à mesa.`, 'join')
+        this.activity(room, `${player.name} entrou na sala.`, 'join')
       } else {
         if (!session || !room) return fail('NOT_IN_ROOM', 'Entre em uma sala para continuar.')
         const playerId = session.playerId
@@ -230,19 +230,20 @@ export class GameService implements OnModuleInit {
               p.solved = false
               p.assignmentTargetId = room!.players[(i + 1) % room!.players.length]!.id
             })
-            this.activity(room, 'Hora de escolher as identidades. Caprichem!', 'game')
+            this.activity(room, 'Cada jogador deve escolher uma identidade.', 'game')
             break
           case 'identity:set': {
             this.requirePhase(room, 'assigning')
             if (command.round !== room.round)
               return fail('STALE_ROUND', 'A rodada mudou. Escolha a identidade novamente.')
             const target = room.players.find((p) => p.id === self.assignmentTargetId)
-            if (!target) return fail('INVALID_TARGET', 'A mesa mudou. Volte à sala de espera.')
+            if (!target)
+              return fail('INVALID_TARGET', 'Os jogadores mudaram. Volte à sala de espera.')
             target.identity = command.identity
             if (room.players.every((p) => !!p.identity)) {
               room.phase = 'playing'
               this.setActive(room, room.players[0]!.id)
-              this.activity(room, 'Cartas na mesa. A rodada começou!', 'game')
+              this.activity(room, 'A rodada começou!', 'game')
             }
             break
           }
@@ -257,10 +258,7 @@ export class GameService implements OnModuleInit {
             this.requireTurn(room, command.turnId)
             // Another participant confirms the spoken guess; nobody can reveal their own card.
             if (room.activePlayerId === self.id)
-              return fail(
-                'CANNOT_CONFIRM_SELF',
-                'Outra pessoa da mesa precisa confirmar seu acerto.',
-              )
+              return fail('CANNOT_CONFIRM_SELF', 'Outro jogador precisa confirmar seu acerto.')
             const active = this.active(room)
             active.solved = true
             active.score++
@@ -367,7 +365,7 @@ export class GameService implements OnModuleInit {
           p.assignmentTargetId = null
           p.ready = false
         })
-        this.activity(room, 'A mesa mudou. Vamos reorganizar as identidades.', 'game')
+        this.activity(room, 'Os jogadores mudaram. Escolham as identidades novamente.', 'game')
       }
       room.players = room.players.filter((p) => p.id !== playerId)
     } else if (room.phase === 'playing') {
@@ -378,7 +376,7 @@ export class GameService implements OnModuleInit {
       room.hostId =
         (room.players.find((p) => !p.departed && p.online) ?? room.players.find((p) => !p.departed))
           ?.id ?? ''
-    this.activity(room, `${player.name} saiu da mesa.`, 'connection')
+    this.activity(room, `${player.name} saiu da sala.`, 'connection')
   }
   private activity(room: Room, text: string, kind: Room['activity'][number]['kind']) {
     room.activity.push({ id: randomUUID(), text, kind, at: Date.now() })

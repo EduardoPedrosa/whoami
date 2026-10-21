@@ -25,10 +25,10 @@ export function HelpDialog() {
       </DialogTrigger>
       <DialogContent className="help-dialog rounded-3xl">
         <DialogHeader>
-          <span className="dialog-kicker">BOM DE PERGUNTA?</span>
-          <DialogTitle className="text-3xl">Você só não sabe quem é.</DialogTitle>
+          <span className="dialog-kicker">AS REGRAS</span>
+          <DialogTitle className="text-3xl">Como jogar Quem sou eu?</DialogTitle>
           <DialogDescription>
-            O resto da mesa sabe. Descubra fazendo as perguntas certas.
+            Seus amigos sabem sua identidade. Faça perguntas para descobrir.
           </DialogDescription>
         </DialogHeader>
         <ol className="how-to-list">
@@ -52,7 +52,7 @@ export function HelpDialog() {
           <li>
             <ChatCircleDots aria-hidden="true" />
             <div>
-              <strong>Pergunte. Desconfie. Descubra.</strong>
+              <strong>Faça perguntas de sim ou não</strong>
               <p>
                 Na sua vez, faça perguntas de sim ou não em voz alta. Continue até acertar, passar
                 ou acabar o tempo.
@@ -62,7 +62,7 @@ export function HelpDialog() {
           <li>
             <Trophy aria-hidden="true" />
             <div>
-              <strong>Acertou? A mesa confirma.</strong>
+              <strong>Outro jogador confirma o acerto</strong>
               <p>
                 Outra pessoa confirma seu acerto. Sua carta é revelada, você ganha um ponto e a vez
                 avança.

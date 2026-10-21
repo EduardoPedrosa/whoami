@@ -12,12 +12,8 @@ export function Results({ room, disabled }: { room: RoomView; disabled: boolean 
         <Trophy size={50} weight="duotone" aria-hidden="true" />
       </div>
       <span className="small-tag">RODADA {room.round} CONCLUÍDA</span>
-      <h2>Vocês se descobriram.</h2>
-      <p>
-        As identidades ficam. As histórias também.
-        <br />
-        Bora para mais uma?
-      </p>
+      <h2>Fim da rodada!</h2>
+      <p>Confira as identidades e os pontos. Vamos jogar de novo?</p>
       <ul className="result-list">
         {players.map((player) => (
           <li key={player.id}>

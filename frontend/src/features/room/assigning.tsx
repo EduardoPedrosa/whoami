@@ -36,7 +36,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
     <div className="assigning-content">
       <div className="assignment-heading">
         <span className="small-tag">{room.settings.category}</span>
-        <h2>Prepare uma boa surpresa.</h2>
+        <h2>Quem vai ser quem?</h2>
         <p>
           Escolha uma identidade que {target.name} consiga descobrir. Pode ser uma pessoa,
           personagem ou coisa.
@@ -54,7 +54,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
         {submitted ? (
           <div className="assignment-confirmed">
             <CheckCircle size={42} weight="duotone" aria-hidden="true" />
-            <h4>Segredo guardado.</h4>
+            <h4>Identidade enviada.</h4>
             <p>{room.submittedIdentity}</p>
             <span>{target.name} só vai descobrir jogando.</span>
             <Button variant="ghost" disabled={disabled} onClick={() => setEditing(true)}>
@@ -84,7 +84,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
               {localError || `${identity.length}/50 caracteres. Evite algo que só você conhece.`}
             </p>
             <Button type="submit" disabled={disabled}>
-              Guardar identidade
+              Enviar identidade
               <ArrowRight size={18} aria-hidden="true" />
             </Button>
           </form>
@@ -101,7 +101,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
             }}
           >
             <Shuffle size={17} aria-hidden="true" />
-            Sem ideia? Me inspira
+            Sugerir uma identidade
           </Button>
         </div>
       )}
@@ -124,7 +124,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
           </strong>{' '}
           identidades escolhidas
         </p>
-        <span>Quando todo mundo escolher, as cartas viram.</span>
+        <span>A rodada começa quando todos escolherem.</span>
       </div>
     </div>
   )

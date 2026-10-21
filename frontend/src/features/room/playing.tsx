@@ -43,7 +43,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
           )}
         </div>
         <div className="turn-copy">
-          <span>{isMyTurn ? 'O HOLOFOTE É SEU' : 'A MESA ESTÁ OUVINDO'}</span>
+          <span>{isMyTurn ? 'SUA VEZ' : 'VEZ DE RESPONDER'}</span>
           <h2>
             {isMyTurn
               ? 'Sua vez de descobrir.'
@@ -55,7 +55,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
             {isMyTurn
               ? 'Faça perguntas de sim ou não em voz alta.'
               : active
-                ? 'Respondam sem entregar o segredo. Vale tentar não rir.'
+                ? 'Responda às perguntas com sim ou não, sem revelar a identidade.'
                 : 'A rodada continua quando alguém reconectar.'}
           </p>
         </div>
@@ -79,7 +79,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
               ? 'Uma boa primeira pergunta: “Eu existo na vida real?”'
               : active
                 ? `${active.name} falou a identidade certa? Confirme o acerto.`
-                : 'Ninguém perde a identidade por uma queda rápida.'}
+                : 'Aguarde os outros jogadores se reconectarem.'}
           </p>
         </div>
         <div className="turn-buttons">

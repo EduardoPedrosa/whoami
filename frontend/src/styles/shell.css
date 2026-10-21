@@ -1,5 +1,7 @@
 .app-shell {
-  width: min(100% - 112px, 1280px);
+  --page-gutter: clamp(20px, 4vw, 56px);
+  width: min(100%, 1392px);
+  padding-inline: var(--page-gutter);
   margin: 0 auto;
   min-height: 100dvh;
   display: flex;
@@ -20,6 +22,9 @@
 }
 .site-header {
   height: 100px;
+  padding: 20px var(--page-gutter);
+  margin-inline: calc(-1 * var(--page-gutter));
+  gap: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,7 +51,7 @@
   font-weight: 800;
   font-size: 32px;
   transform: rotate(-9deg);
-  box-shadow: 3px 3px 0 #4e5b30;
+  box-shadow: 3px 3px 0 #405ba5;
   letter-spacing: 0;
 }
 .brand-period {
@@ -83,9 +88,9 @@
   gap: 14px;
   align-items: center;
   padding: 18px 22px;
-  border: 1px solid #64754b;
+  border: 1px solid #536b98;
   border-radius: 16px;
-  background: #273122;
+  background: #1d2b49;
   margin-top: 20px;
 }
 .connection-banner > svg {
@@ -100,7 +105,7 @@
   font-weight: 550;
 }
 .connection-banner p {
-  color: #c1c9b9;
+  color: #bccbe8;
   font-size: 13px;
   margin-top: 3px;
 }
@@ -128,14 +133,25 @@
   margin-top: 6px;
 }
 .code-input {
-  font: 20px var(--font-code);
-  letter-spacing: 5px;
+  font-family: var(--font-code);
+  font-size: 18px;
+  letter-spacing: 0.14em;
+}
+.code-input::placeholder {
+  font-size: 16px;
+  letter-spacing: 0.08em;
 }
 .dialog-kicker {
   color: var(--primary);
   font: 10px var(--font-code);
   letter-spacing: 1.5px;
   margin-bottom: 6px;
+}
+[data-slot='dialog-content'],
+[data-slot='alert-dialog-content'] {
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .help-dialog {
   max-height: min(90dvh, 850px);
@@ -179,12 +195,12 @@
 [data-slot='dialog-content'],
 [data-slot='alert-dialog-content'] {
   background: var(--popover);
-  border-color: #566650;
+  border-color: #536b98;
   box-shadow: 0 30px 90px #0008;
 }
 [data-slot='dialog-overlay'],
 [data-slot='alert-dialog-overlay'] {
-  background: #030a06bf;
+  background: #050917bf;
   backdrop-filter: blur(8px);
 }
 [data-slot='alert-dialog-description'] {
