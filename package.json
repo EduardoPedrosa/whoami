@@ -1,0 +1,27 @@
+{
+  "name": "whoami",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "yarn@1.22.19",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others -n frontend,backend \"yarn dev:frontend\" \"yarn dev:backend\"",
+    "dev:frontend": "yarn workspace @whoami/frontend dev",
+    "dev:backend": "yarn workspace @whoami/backend dev",
+    "build": "yarn workspace @whoami/frontend build",
+    "start": "concurrently --kill-others -n frontend,backend \"yarn start:frontend\" \"yarn start:backend\"",
+    "start:frontend": "yarn workspace @whoami/frontend start",
+    "start:backend": "yarn workspace @whoami/backend start",
+    "lint": "yarn workspace @whoami/frontend lint && yarn workspace @whoami/backend lint",
+    "test": "yarn workspace @whoami/backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

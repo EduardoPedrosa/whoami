@@ -1,7 +1,7 @@
 const server = require("http").createServer()
 const io = require("socket.io")(server, {
   cors: {
-    origin: "*",
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
   },
 })
 
@@ -26,7 +26,9 @@ io.on("connection", (client) => {
 
   client.on("disconnect", () => {
     const index = users.findIndex((u) => u.id === client.id)
+    if (index === -1) return
     users.splice(index, 1)
+    if (users.length === 0) state = states.WAITING
     sendToAllAndHideOwnLabel(io, users)
   })
 
@@ -66,5 +68,6 @@ io.on("connection", (client) => {
 })
 
 const port = process.env.PORT || 3005
-server.listen(port)
-console.log(`RUNNING ON PORT ${port}`)
+server.listen(port, () => {
+  console.log(`RUNNING ON PORT ${server.address().port}`)
+})

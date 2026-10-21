@@ -1,10 +1,10 @@
 {
-  "name": "whoami",
+  "name": "@whoami/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node --openssl-legacy-provider scripts/next.cjs dev",
+    "build": "node --openssl-legacy-provider scripts/next.cjs build",
     "start": "next start",
     "lint": "next lint"
   },

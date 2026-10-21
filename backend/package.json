@@ -1,12 +1,13 @@
 {
-  "name": "whoami-api",
+  "name": "@whoami/backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "dev": "node --watch --env-file-if-exists=.env src/index.js",
+    "test": "node --test test/*.test.js",
+    "lint": "node --check src/index.js && node --check src/utils/getNextUserIndex.js && node --check src/utils/sendToAllAndHideOwnLabel.js && node --check src/utils/states.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "socket.io": "^4.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.13"
-  }
+    "socket.io-client": "^4.2.0"
+  },
+  "private": true
 }

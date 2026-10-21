@@ -29,7 +29,7 @@ export default function Home() {
   const classes = useStyles();
 
   useEffect(() => {
-    const s = io("https://my-whoami-api.herokuapp.com/");
+    const s = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3005");
     setSocket(s);
 
     s.on("me", (data) => {
@@ -37,9 +37,9 @@ export default function Home() {
     });
 
     s.on("users", (data) => {
-      if (currentState === states.FIRST_PAGE) {
-        setCurrentState(states.WAITING);
-      }
+      setCurrentState((current) =>
+        current === states.FIRST_PAGE ? states.WAITING : current
+      );
       setUsers(data);
     });
 
