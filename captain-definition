@@ -1,4 +1,4 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath": "./deploy/Dockerfile.caprover"
+  "imageName": "ghcr.io/eduardopedrosa/whoami-api:latest"
 }
