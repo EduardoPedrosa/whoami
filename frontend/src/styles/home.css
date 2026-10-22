@@ -28,12 +28,6 @@
 .menu-heading h1 span {
   color: var(--primary);
 }
-.hero-description {
-  color: var(--muted-foreground);
-  font-size: 19px;
-  line-height: 1.45;
-  margin-top: 12px;
-}
 .hero-art {
   width: min(100%, 380px, max(140px, calc(100dvh - 350px)));
   min-width: 0;
@@ -220,41 +214,6 @@
 .launcher-submit:hover {
   background: var(--primary-hover);
 }
-.game-facts {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-  font-size: 11px;
-  color: var(--muted-foreground);
-  margin-top: 20px;
-}
-.game-facts span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.game-facts svg {
-  color: var(--primary);
-}
-.menu-rule {
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--muted-foreground);
-  margin-top: 12px;
-  text-wrap: balance;
-}
-.site-footer {
-  padding: 14px 0 max(14px, env(safe-area-inset-bottom));
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  color: var(--muted-foreground);
-  font-size: 11px;
-  margin-top: auto;
-  flex-shrink: 0;
-}
 @media (max-width: 767px) and (min-height: 501px) {
   .home-main {
     padding: 12px 0;
@@ -275,23 +234,12 @@
     letter-spacing: -1.4px;
     white-space: nowrap;
   }
-  .hero-description {
-    font-size: 16px;
-    margin-top: 8px;
-  }
   .hero-art {
     width: 100px;
   }
   .launcher-form {
     padding: 16px 13px;
     gap: 14px;
-  }
-  .game-facts {
-    margin-top: 16px;
-    gap: 14px;
-  }
-  .menu-rule {
-    margin-top: 8px;
   }
 }
 @media (max-width: 420px) and (min-height: 501px) {
@@ -305,14 +253,8 @@
     font-size: 30px;
     letter-spacing: -1.3px;
   }
-  .hero-description {
-    font-size: 15px;
-  }
   .menu-layout {
     gap: 16px;
-  }
-  .site-footer {
-    font-size: 10px;
   }
 }
 @media (max-height: 650px) {
@@ -326,10 +268,6 @@
     font-size: 38px;
     letter-spacing: -1.7px;
   }
-  .hero-description {
-    font-size: 16px;
-    margin-top: 8px;
-  }
   .hero-art {
     width: min(100%, 200px, max(100px, calc(100dvh - 320px)));
   }
@@ -339,19 +277,6 @@
   }
   .launcher-submit {
     height: 48px;
-  }
-  .game-facts {
-    margin-top: 12px;
-    gap: 12px;
-    font-size: 10px;
-  }
-  .menu-rule {
-    margin-top: 7px;
-    font-size: 11px;
-  }
-  .site-footer {
-    padding-block: 9px;
-    font-size: 10px;
   }
 }
 @media (max-width: 767px) and (min-height: 501px) and (max-height: 650px) {
@@ -376,9 +301,6 @@
   }
   .menu-intro {
     gap: 4px;
-  }
-  .hero-description {
-    font-size: 14px;
   }
   .hero-art {
     width: 100px;
@@ -411,13 +333,6 @@
   .launcher-submit {
     height: 44px;
   }
-  .game-facts {
-    margin-top: 10px;
-  }
-  .menu-rule {
-    margin-top: 5px;
-    font-size: 10px;
-  }
 }
 @media (max-width: 599px) and (max-height: 500px) {
   .menu-layout {
@@ -448,20 +363,8 @@
   }
   .launcher {
     grid-column: 2;
-    grid-row: 1 / 4;
+    grid-row: 1;
     align-self: center;
-  }
-  .game-facts {
-    grid-column: 1;
-    grid-row: 2;
-    flex-wrap: wrap;
-    margin-top: 0;
-    gap: 5px 12px;
-  }
-  .menu-rule {
-    grid-column: 1;
-    grid-row: 3;
-    margin-top: 0;
   }
 }
 

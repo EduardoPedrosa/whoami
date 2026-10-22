@@ -1,6 +1,6 @@
 # Quem sou eu?
 
-**Todo mundo sabe. Menos você.** Um jogo de “Quem sou eu?” para 2 a 12 amigos, em salas privadas. Cada pessoa escolhe a identidade de outra; perguntas de sim ou não revelam o segredo. Joguem pessoalmente ou em uma chamada de voz.
+Jogo de “Quem sou eu?” para 2 a 12 pessoas, em salas privadas. Cada pessoa escolhe a identidade de outra. As perguntas de sim ou não são feitas pessoalmente ou em uma chamada de voz.
 
 ## O que mudou na versão 2
 

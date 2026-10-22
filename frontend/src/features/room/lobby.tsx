@@ -32,11 +32,11 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
             </span>
           )}
         </div>
-        <h2>{room.players.length < 2 ? 'Convide seus amigos.' : 'Todo mundo por aqui?'}</h2>
+        <h2>Jogadores na sala</h2>
         <p>
           {room.players.length < 2
-            ? 'Você precisa de pelo menos mais uma pessoa para jogar. Compartilhe o link ou o código da sala.'
-            : 'Escolham a categoria, confiram a ordem da roda e avisem quando estiverem prontos.'}
+            ? 'Mínimo de 2 jogadores. Compartilhe o link ou o código da sala.'
+            : 'Definam a categoria e a ordem dos jogadores antes de começar.'}
         </p>
       </div>
       <Settings room={room} disabled={disabled} />
@@ -44,19 +44,11 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
       <div className="lobby-rules">
         <div>
           <IdentificationCard size={24} weight="duotone" aria-hidden="true" />
-          <p>
-            Cada pessoa escolhe
-            <br />
-            <strong>a identidade de outra.</strong>
-          </p>
+          <p>Cada pessoa escolhe a identidade do próximo jogador.</p>
         </div>
         <div>
           <LockSimple size={24} weight="duotone" aria-hidden="true" />
-          <p>
-            Você vê todas as cartas.
-            <br />
-            <strong>Menos a sua.</strong>
-          </p>
+          <p>Sua identidade fica oculta até o acerto ou o fim da rodada.</p>
         </div>
       </div>
       <div className="lobby-controls">
@@ -79,7 +71,7 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
             ) : (
               <Check size={19} aria-hidden="true" />
             )}
-            {self.ready ? 'Estou pronto!' : 'Estou pronto'}
+            {self.ready ? 'Cancelar prontidão' : 'Estou pronto'}
           </Button>
           {host && (
             <Button
@@ -97,7 +89,7 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
       <p className="lobby-next-hint">
         {host
           ? allReady
-            ? 'Todo mundo pronto. Pode começar!'
+            ? 'Todos os jogadores estão prontos.'
             : 'O anfitrião pode começar quando todos estiverem prontos.'
           : 'Quando todos estiverem prontos, o anfitrião inicia a rodada.'}
       </p>

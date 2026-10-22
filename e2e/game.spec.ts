@@ -4,8 +4,8 @@ import AxeBuilder from '@axe-core/playwright'
 async function create(page: Page, name = 'Alice') {
   await page.goto('/')
   await page.getByLabel('Seu nome').fill(name)
-  await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeEnabled()
-  await page.getByRole('button', { name: 'Bora jogar' }).click()
+  await expect(page.getByRole('button', { name: 'Criar sala' })).toBeEnabled()
+  await page.getByRole('button', { name: 'Criar sala' }).click()
   await expect(page.getByRole('heading', { name: /Sala de espera/ })).toBeVisible()
   return (await page.locator('.room-topline .mono').textContent())!
 }
@@ -119,7 +119,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await expect(a.getByText('Identidade enviada.')).toBeVisible()
     await b.getByLabel('Quem essa pessoa vai ser?').fill('Uma capivara')
     await b.getByRole('button', { name: 'Enviar identidade' }).click()
-    await expect(a.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
+    await expect(a.getByRole('heading', { name: 'Sua vez' })).toBeVisible()
     await expect(a.locator('.circle-own')).not.toContainText('Uma capivara')
     await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
     await expect(a.locator('.circle-seat').filter({ hasText: 'Bob' })).toContainText(
@@ -136,7 +136,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await a.screenshot({ path: 'test-results/playing-desktop.png', fullPage: true })
     await b.screenshot({ path: 'test-results/playing-mobile.png', fullPage: true })
     await b.reload()
-    await expect(b.getByRole('heading', { name: 'É a vez de Alice.' })).toBeVisible()
+    await expect(b.getByRole('heading', { name: 'Vez de Alice' })).toBeVisible()
     await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
     await guest.setOffline(true)
     await expect(b.getByText('Você está sem internet.')).toBeVisible()
@@ -150,18 +150,18 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await expect(b.getByRole('alertdialog')).toHaveCount(0)
     await expect(a.locator('.circle-own')).not.toContainText('Uma capivara')
     await b.getByRole('button', { name: 'Confirmar acerto de Alice', exact: true }).click()
-    await b.getByRole('button', { name: 'Sim, acertou!' }).click()
+    await b.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
     await b.setViewportSize({ width: 390, height: 844 })
-    await expect(b.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
+    await expect(b.getByRole('heading', { name: 'Sua vez' })).toBeVisible()
     await expect(a.locator('.circle-own')).toContainText('Uma capivara')
     await a.getByRole('button', { name: 'Confirmar acerto de Bob', exact: true }).click()
-    await a.getByRole('button', { name: 'Sim, acertou!' }).click()
-    await expect(a.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
-    await expect(b.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
+    await a.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
+    await expect(a.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
+    await expect(b.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
     await assertMobileLayouts(b)
     await assertAccessible(a)
     await a.screenshot({ path: 'test-results/results-desktop.png', fullPage: true })
-    await a.getByRole('button', { name: 'Mais uma rodada' }).click()
+    await a.getByRole('button', { name: 'Nova rodada' }).click()
     await expect(a.getByRole('heading', { name: /Sala de espera/ })).toBeVisible()
     expect(errors).toEqual([])
   } finally {
@@ -176,7 +176,7 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('button', { name: 'Como jogar' })).toBeFocused()
-  await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Criar sala' })).toBeEnabled()
   for (const size of [
     { width: 1440, height: 1000 },
     { width: 1024, height: 768 },
@@ -198,7 +198,6 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
       for (const element of [
         page.locator('#home-title'),
         page.locator('.launcher-submit'),
-        page.locator('.game-facts'),
         page.locator('.hero-art'),
       ]) {
         const box = (await element.boundingBox())!
@@ -216,17 +215,17 @@ test('home, validation, accessible help dialog and responsive layouts', async ({
       expect(box.x).toBeGreaterThanOrEqual(headerBox.x + 12)
       expect(box.x + box.width).toBeLessThanOrEqual(headerBox.x + headerBox.width - 12)
     }
-    await expect(page.getByRole('button', { name: 'Bora jogar' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Criar sala' })).toBeVisible()
     await page.getByRole('button', { name: 'Como jogar' }).click()
     await assertDialogFits(page)
-    await page.getByRole('button', { name: 'Entendi, vamos jogar' }).click()
+    await page.getByRole('button', { name: 'Entendi' }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await page.screenshot({
       path: `test-results/home-${size.width}x${size.height}.png`,
       fullPage: true,
     })
   }
-  await page.getByRole('button', { name: 'Bora jogar' }).click()
+  await page.getByRole('button', { name: 'Criar sala' }).click()
   await expect(page.getByText('Use pelo menos 2 letras.')).toBeVisible()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 375, height: 812 })
@@ -282,7 +281,7 @@ test('falls back to polling when WebSocket is blocked', async ({ page }) => {
   await create(page, 'Elisa')
   await expect(page.locator('.connection-status')).toContainText('Conectado')
   await page.getByRole('button', { name: 'Estou pronto', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Estou pronto!', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Cancelar prontidão', exact: true })).toBeVisible()
 })
 
 test('supports session commands when randomUUID is unavailable on a local network', async ({
@@ -293,5 +292,5 @@ test('supports session commands when randomUUID is unavailable on a local networ
   })
   await create(page, 'Fernanda')
   await page.getByRole('button', { name: 'Estou pronto', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Estou pronto!', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Cancelar prontidão', exact: true })).toBeVisible()
 })

@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { motion } from 'motion/react'
-import { ArrowRight, Plus, SignIn, UsersThree, DeviceMobile } from '@phosphor-icons/react'
+import { ArrowRight, Plus, SignIn } from '@phosphor-icons/react'
 import { profileSchema, roomCodeSchema, type Avatar as AvatarId } from '@whoami/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -64,11 +64,6 @@ export function Home() {
             <h1 id="home-title">
               Quem sou <span>eu?</span>
             </h1>
-            <p className="hero-description">
-              Todo mundo sabe.
-              <br />
-              Menos você.
-            </p>
           </motion.div>
           <motion.div
             className="hero-art"
@@ -167,25 +162,16 @@ export function Home() {
               )}
               <Button type="submit" size="lg" className="launcher-submit" disabled={disabled}>
                 {pending
-                  ? 'Entrando na sala…'
+                  ? mode === 'create'
+                    ? 'Criando sala…'
+                    : 'Entrando na sala…'
                   : mode === 'create'
-                    ? 'Bora jogar'
+                    ? 'Criar sala'
                     : 'Entrar na sala'}
                 <ArrowRight size={20} aria-hidden="true" />
               </Button>
             </form>
           </motion.div>
-
-          <div className="game-facts">
-            <span>
-              <UsersThree aria-hidden="true" size={17} />2 a 12 pessoas
-            </span>
-            <span>
-              <DeviceMobile aria-hidden="true" size={17} />
-              Cada um no seu celular
-            </span>
-          </div>
-          <p className="menu-rule">Descubra quem você é com perguntas de sim ou não.</p>
         </div>
       </section>
     </main>

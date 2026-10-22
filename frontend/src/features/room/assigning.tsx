@@ -38,11 +38,8 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
     <div className="assigning-content">
       <div className="assignment-heading">
         <span className="small-tag">{room.settings.category}</span>
-        <h2>Quem vai ser quem?</h2>
-        <p>
-          Escolha uma identidade que {target.name} consiga descobrir. Pode ser uma pessoa,
-          personagem ou coisa.
-        </p>
+        <h2>Escolha de identidade</h2>
+        <p>Escolha uma pessoa, personagem ou objeto para {target.name}.</p>
       </div>
       <div className={cn('assignment-card', submitted && 'assignment-sent')}>
         <div className="assignment-card-top">
@@ -58,7 +55,6 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
             <CheckCircle size={42} weight="duotone" aria-hidden="true" />
             <h4>Identidade enviada.</h4>
             <p>{room.submittedIdentity}</p>
-            <span>{target.name} só vai descobrir jogando.</span>
             <Button variant="ghost" disabled={disabled} onClick={() => setEditing(true)}>
               Trocar identidade
             </Button>
@@ -83,7 +79,7 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
               id="identity-hint"
               className={cn(localError ? 'field-error' : 'text-muted-foreground')}
             >
-              {localError || `${identity.length}/50 caracteres. Evite algo que só você conhece.`}
+              {localError || `${identity.length}/50 caracteres`}
             </p>
             <Button type="submit" disabled={disabled}>
               Enviar identidade

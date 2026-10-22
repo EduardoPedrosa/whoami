@@ -1,10 +1,4 @@
-import {
-  UsersThree,
-  IdentificationCard,
-  ChatCircleDots,
-  CheckCircle,
-  ArrowRight,
-} from '@phosphor-icons/react'
+import { UsersThree, IdentificationCard, ChatCircleDots, CheckCircle } from '@phosphor-icons/react'
 import {
   Dialog,
   DialogContent,
@@ -27,9 +21,7 @@ export function HelpDialog() {
         <DialogHeader>
           <span className="dialog-kicker">AS REGRAS</span>
           <DialogTitle className="text-3xl">Como jogar Quem sou eu?</DialogTitle>
-          <DialogDescription>
-            Seus amigos sabem sua identidade. Faça perguntas para descobrir.
-          </DialogDescription>
+          <DialogDescription>Jogo de adivinhar identidades para 2 a 12 pessoas.</DialogDescription>
         </DialogHeader>
         <ol className="how-to-list">
           <li>
@@ -74,14 +66,9 @@ export function HelpDialog() {
             </div>
           </li>
         </ol>
-        <p className="text-sm text-muted-foreground">
-          O Whoami cuida das cartas e dos turnos. O áudio acontece com vocês, pessoalmente ou na
-          chamada que preferirem.
-        </p>
+        <p className="text-sm text-muted-foreground">O jogo não transmite áudio ou vídeo.</p>
         <DialogClose asChild>
-          <Button className="w-full">
-            Entendi, vamos jogar <ArrowRight aria-hidden="true" />
-          </Button>
+          <Button className="w-full">Entendi</Button>
         </DialogClose>
       </DialogContent>
     </Dialog>

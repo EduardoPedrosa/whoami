@@ -68,10 +68,6 @@ export function App() {
           >
             {room ? <RoomScreen room={room} /> : <Home />}
           </Suspense>
-          <footer className="site-footer">
-            <span>Jogue com seus amigos.</span>
-            <span className="footer-question">Sem cadastro.</span>
-          </footer>
         </div>
       </TooltipProvider>
     </MotionConfig>

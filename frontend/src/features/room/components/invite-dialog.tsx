@@ -37,10 +37,8 @@ export function Invite({ room }: { room: RoomView }) {
       </DialogTrigger>
       <DialogContent className="rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Convide seus amigos</DialogTitle>
-          <DialogDescription>
-            Envie o link ou peça para seus amigos entrarem com este código.
-          </DialogDescription>
+          <DialogTitle className="text-2xl">Convite da sala</DialogTitle>
+          <DialogDescription>Compartilhe o link ou o código da sala.</DialogDescription>
         </DialogHeader>
         <div className="invite-code-big" aria-label={`Código da sala: ${room.code}`}>
           {room.code}
@@ -55,8 +53,8 @@ export function Invite({ room }: { room: RoomView }) {
           {failure
             ? 'Não foi possível copiar. Selecione o link acima e copie manualmente.'
             : copied
-              ? 'Agora é só mandar no grupo.'
-              : 'Sem cadastro. Cada pessoa entra pelo próprio navegador.'}
+              ? 'Link copiado.'
+              : ''}
         </p>
         {typeof navigator.share === 'function' && (
           <Button
@@ -64,7 +62,7 @@ export function Invite({ room }: { room: RoomView }) {
             onClick={() => {
               void navigator
                 .share({
-                  title: 'Bora jogar Whoami?',
+                  title: 'Quem sou eu?',
                   text: `Entre na minha sala ${room.code}`,
                   url: link,
                 })

@@ -112,8 +112,8 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
     await page.getByRole('button', { name: 'Fechar', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await page.getByRole('button', { name: 'Confirmar acerto de Pessoa 3', exact: true }).click()
-    await page.getByRole('button', { name: 'Sim, acertou!' }).click()
-    await expect(page.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
+    await page.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Sua vez' })).toBeVisible()
     await expect(page.locator('.circle-seat').filter({ hasText: 'Pessoa 3' })).toHaveClass(
       /circle-solved/,
     )
@@ -124,7 +124,7 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
     await expect(page.locator('.circle-seat')).toHaveCount(12)
     await page.getByRole('button', { name: 'Encerrar partida', exact: true }).click()
     await page.getByRole('button', { name: 'Sim, encerrar partida', exact: true }).click()
-    await expect(page.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
     await expect(page.locator('.result-list')).toContainText('Identidade 12')
     await expect(page.locator('.result-list li')).toHaveCount(12)
   } finally {

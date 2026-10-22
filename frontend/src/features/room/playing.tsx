@@ -41,16 +41,12 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
           <span>{isMyTurn ? 'SUA VEZ' : 'NA RODA'}</span>
           <h2>
             {isMyTurn
-              ? 'Sua vez de descobrir.'
+              ? 'Sua vez'
               : active
-                ? `É a vez de ${active.name}.`
+                ? `Vez de ${active.name}`
                 : 'Esperando a conexão voltar.'}
           </h2>
-          <p>
-            {active
-              ? 'Sigam a mesma ordem da roda em que vocês estão sentados.'
-              : 'A partida continua quando alguém se reconectar.'}
-          </p>
+          {!active && <p>Aguardando a reconexão de um jogador.</p>}
         </div>
       </div>
       <CircleTable room={room} />
@@ -117,7 +113,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
                   setConfirmation(null)
               }}
             >
-              Sim, acertou!
+              Confirmar acerto
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

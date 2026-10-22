@@ -11,8 +11,7 @@ export function Results({ room, disabled }: { room: RoomView; disabled: boolean 
         <IdentificationCard size={50} weight="duotone" aria-hidden="true" />
       </div>
       <span className="small-tag">RODADA {room.round} ENCERRADA</span>
-      <h2>Fim da rodada!</h2>
-      <p>Agora todo mundo pode ver quem era quem.</p>
+      <h2>Fim da rodada</h2>
       <ul className="result-list">
         {room.players.map((player) => (
           <li key={player.id}>
@@ -42,7 +41,7 @@ export function Results({ room, disabled }: { room: RoomView; disabled: boolean 
           }}
         >
           <Shuffle size={19} aria-hidden="true" />
-          Mais uma rodada
+          Nova rodada
         </Button>
       ) : (
         <p className="text-sm text-muted-foreground">

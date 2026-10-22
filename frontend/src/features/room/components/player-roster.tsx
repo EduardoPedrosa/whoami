@@ -68,8 +68,8 @@ export function PlayerRoster({ room }: { room: RoomView }) {
       <div className="table-tip">
         <SpeakerHigh aria-hidden="true" size={21} />
         <div>
-          <strong>Joguem conversando</strong>
-          <p>Joguem lado a lado ou abram uma chamada de voz. O áudio fica por conta de vocês.</p>
+          <strong>Áudio externo</strong>
+          <p>Conversem pessoalmente ou em uma chamada. O jogo não transmite áudio.</p>
         </div>
       </div>
       <div className="activity-section">
