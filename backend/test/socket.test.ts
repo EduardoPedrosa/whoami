@@ -13,6 +13,7 @@ beforeAll(async () => {
     env: {
       ...process.env,
       PORT: '0',
+      STORAGE_MODE: 'memory',
       DATABASE_PATH: ':memory:',
       CORS_ORIGIN: 'http://localhost:3000',
     },

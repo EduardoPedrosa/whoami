@@ -1,7 +1,8 @@
 import { Controller, Get, Module } from '@nestjs/common'
 import { GameGateway } from './game/game.gateway'
 import { GameService } from './game/game.service'
-import { DatabaseService } from './storage/database.service'
+import { GameStore } from './storage/game-store'
+import { MemoryStore } from './storage/memory-store'
 
 @Controller('api')
 class HealthController {
@@ -12,6 +13,21 @@ class HealthController {
 
 @Module({
   controllers: [HealthController],
-  providers: [DatabaseService, GameService, GameGateway],
+  providers: [
+    {
+      provide: GameStore,
+      useFactory: async () => {
+        const mode = process.env.STORAGE_MODE || 'sqlite'
+        if (mode === 'memory') return new MemoryStore()
+        if (mode === 'sqlite') {
+          const { DatabaseService } = await import('./storage/database.service')
+          return new DatabaseService()
+        }
+        throw new Error('STORAGE_MODE precisa ser memory ou sqlite.')
+      },
+    },
+    GameService,
+    GameGateway,
+  ],
 })
 export class AppModule {}

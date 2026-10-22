@@ -8,7 +8,7 @@ import {
   type Command,
   type RoomView,
 } from '@whoami/shared'
-import { DatabaseService } from '../storage/database.service'
+import { GameStore } from '../storage/game-store'
 import { GameError, type Player, type Room } from './models'
 
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -20,7 +20,7 @@ const fail = (code: string, message: string): never => {
 
 @Injectable()
 export class GameService implements OnModuleInit {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: GameStore) {}
 
   onModuleInit() {
     // Recovery is app-level as well as transport-level: never trust persisted presence.

@@ -70,6 +70,7 @@ deploy/                    Dockerfiles e Nginx
 | `CORS_ORIGIN`     | Backend               | `http://localhost:3000`; obrigatório em produção, lista separada por vírgulas |
 | `DATABASE_PATH`   | Backend               | `./data/whoami.sqlite`, relativo ao diretório do processo                     |
 | `NODE_ENV`        | Backend               | `development`                                                                 |
+| `STORAGE_MODE`    | Backend               | `sqlite`; use `memory` para jogar sem banco, perdendo as salas ao reiniciar       |
 
 O Vite encaminha `/socket.io` e `/api` ao backend no desenvolvimento/preview. Se hospedar os serviços em domínios separados, configure `VITE_SOCKET_URL=https://api.seu-dominio` **antes do build** e autorize a origem do frontend no backend. Variáveis `VITE_*` são públicas; nunca coloque segredos nelas.
 
@@ -99,6 +100,7 @@ A aplicação não transmite áudio/vídeo. Uma desconexão temporária mantém 
 
 - [Arquitetura, regras e garantias da conexão](docs/architecture.md)
 - [Operação, limites e publicação](docs/operations.md)
+- [Deploy do frontend na Cloudflare e backend no CapRover, sem banco](docs/cloudflare-caprover.md)
 - [Auditoria e direção visual](docs/reviews/2026-10-21-audit.md)
 - [Evolução sugerida do produto](docs/roadmap.md)
 

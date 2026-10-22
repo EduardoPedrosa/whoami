@@ -3,11 +3,13 @@ import Database from 'better-sqlite3'
 import { dirname, resolve } from 'node:path'
 import { mkdirSync } from 'node:fs'
 import type { Receipt, Room, Session } from '../game/models'
+import { GameStore } from './game-store'
 
 @Injectable()
-export class DatabaseService implements OnApplicationShutdown {
+export class DatabaseService extends GameStore implements OnApplicationShutdown {
   private readonly db: Database.Database
   constructor() {
+    super()
     const location = process.env.DATABASE_PATH || './data/whoami.sqlite'
     if (location !== ':memory:') mkdirSync(dirname(resolve(location)), { recursive: true })
     this.db = new Database(location)
