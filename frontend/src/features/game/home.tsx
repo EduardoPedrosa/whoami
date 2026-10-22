@@ -45,7 +45,7 @@ export function Home() {
         ? {
             type: 'room:create',
             profile: profile.data,
-            settings: { category: 'Tudo vale', turnSeconds: 90 },
+            settings: { category: 'Tudo vale' },
           }
         : { type: 'room:join', profile: profile.data, code: parsedCode.data! },
     )

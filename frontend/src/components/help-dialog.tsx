@@ -2,7 +2,7 @@ import {
   UsersThree,
   IdentificationCard,
   ChatCircleDots,
-  Trophy,
+  CheckCircle,
   ArrowRight,
 } from '@phosphor-icons/react'
 import {
@@ -36,7 +36,10 @@ export function HelpDialog() {
             <UsersThree aria-hidden="true" />
             <div>
               <strong>Reúna de 2 a 12 amigos</strong>
-              <p>Crie uma sala e compartilhe o código. Joguem juntos ou em uma chamada de voz.</p>
+              <p>
+                Crie uma sala e compartilhe o código. O administrador pode ajustar a ordem para
+                acompanhar a roda presencial.
+              </p>
             </div>
           </li>
           <li>
@@ -54,18 +57,19 @@ export function HelpDialog() {
             <div>
               <strong>Faça perguntas de sim ou não</strong>
               <p>
-                Na sua vez, faça perguntas de sim ou não em voz alta. Continue até acertar, passar
-                ou acabar o tempo.
+                Na sua vez, faça perguntas em voz alta. Quando quiser, passe a vez para a próxima
+                pessoa da roda.
               </p>
             </div>
           </li>
           <li>
-            <Trophy aria-hidden="true" />
+            <CheckCircle aria-hidden="true" />
             <div>
-              <strong>Outro jogador confirma o acerto</strong>
+              <strong>Quem escreveu confirma o acerto</strong>
               <p>
-                Outra pessoa confirma seu acerto. Sua carta é revelada, você ganha um ponto e a vez
-                avança.
+                A pessoa que escreveu sua identidade confirma quando você acertar. Você deixa de
+                perguntar, e os demais continuam. O administrador também pode encerrar a partida com
+                confirmação.
               </p>
             </div>
           </li>

@@ -37,7 +37,9 @@ export function PlayerRoster({ room }: { room: RoomView }) {
                           ? player.hasAssigned
                             ? 'Identidade escolhida'
                             : 'Escolhendo identidade'
-                          : `${player.score} ${player.score === 1 ? 'ponto' : 'pontos'}`}
+                          : player.id === room.activePlayerId
+                            ? 'Perguntando agora'
+                            : 'Na roda'}
                 </span>
               </div>
               {player.id === room.hostId && (

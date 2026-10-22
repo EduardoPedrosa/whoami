@@ -71,7 +71,7 @@ async function assertAccessible(page: Page) {
   ).toEqual([])
 }
 
-test('full two-player round with refresh, offline recovery, secrets and scoring', async ({
+test('full two-player round with refresh, offline recovery, secrets and author confirmations', async ({
   browser,
 }) => {
   const host = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
@@ -106,18 +106,26 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     await expect(b.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
     await assertMobileLayouts(b)
     await assertAccessible(a)
+    const suggestions = new Set<string>()
+    for (let i = 0; i < 10; i++) {
+      await a.getByRole('button', { name: 'Sugerir uma identidade' }).click()
+      suggestions.add(await a.getByLabel('Quem essa pessoa vai ser?').inputValue())
+    }
+    expect(suggestions.size).toBe(10)
+    await a.screenshot({ path: 'test-results/assigning-desktop.png', fullPage: true })
+    await b.screenshot({ path: 'test-results/assigning-mobile.png', fullPage: true })
     await a.getByLabel('Quem essa pessoa vai ser?').fill('Sherlock Holmes')
     await a.getByRole('button', { name: 'Enviar identidade' }).click()
     await expect(a.getByText('Identidade enviada.')).toBeVisible()
     await b.getByLabel('Quem essa pessoa vai ser?').fill('Uma capivara')
     await b.getByRole('button', { name: 'Enviar identidade' }).click()
     await expect(a.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
-    await expect(a.locator('.identity-own')).not.toContainText('Uma capivara')
-    await expect(b.locator('.identity-own')).not.toContainText('Sherlock Holmes')
-    await expect(a.locator('.identity-card').filter({ hasText: 'Bob' })).toContainText(
+    await expect(a.locator('.circle-own')).not.toContainText('Uma capivara')
+    await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
+    await expect(a.locator('.circle-seat').filter({ hasText: 'Bob' })).toContainText(
       'Sherlock Holmes',
     )
-    await expect(b.locator('.identity-card').filter({ hasText: 'Alice' })).toContainText(
+    await expect(b.locator('.circle-seat').filter({ hasText: 'Alice' })).toContainText(
       'Uma capivara',
     )
     await assertNoOverflow(a)
@@ -129,20 +137,24 @@ test('full two-player round with refresh, offline recovery, secrets and scoring'
     await b.screenshot({ path: 'test-results/playing-mobile.png', fullPage: true })
     await b.reload()
     await expect(b.getByRole('heading', { name: 'É a vez de Alice.' })).toBeVisible()
-    await expect(b.locator('.identity-own')).not.toContainText('Sherlock Holmes')
+    await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
     await guest.setOffline(true)
     await expect(b.getByText('Você está sem internet.')).toBeVisible()
     await guest.setOffline(false)
     await expect(b.getByText('Você está sem internet.')).toHaveCount(0)
     await expect(b.locator('.connection-status')).toContainText('Conectado')
     await b.setViewportSize({ width: 812, height: 375 })
-    await b.getByRole('button', { name: 'Confirmar acerto' }).click()
+    await b.getByRole('button', { name: 'Confirmar acerto de Alice', exact: true }).click()
     await assertDialogFits(b)
+    await b.getByRole('button', { name: 'Ainda não', exact: true }).click()
+    await expect(b.getByRole('alertdialog')).toHaveCount(0)
+    await expect(a.locator('.circle-own')).not.toContainText('Uma capivara')
+    await b.getByRole('button', { name: 'Confirmar acerto de Alice', exact: true }).click()
     await b.getByRole('button', { name: 'Sim, acertou!' }).click()
     await b.setViewportSize({ width: 390, height: 844 })
     await expect(b.getByRole('heading', { name: 'Sua vez de descobrir.' })).toBeVisible()
-    await expect(a.locator('.identity-own')).toContainText('Uma capivara')
-    await a.getByRole('button', { name: 'Confirmar acerto' }).click()
+    await expect(a.locator('.circle-own')).toContainText('Uma capivara')
+    await a.getByRole('button', { name: 'Confirmar acerto de Bob', exact: true }).click()
     await a.getByRole('button', { name: 'Sim, acertou!' }).click()
     await expect(a.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()
     await expect(b.getByRole('heading', { name: 'Fim da rodada!' })).toBeVisible()

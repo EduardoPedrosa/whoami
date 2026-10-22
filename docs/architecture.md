@@ -2,7 +2,7 @@
 
 ## Decisões
 
-O frontend é uma SPA React/TypeScript com Vite. Não existe necessidade de SSR para o tabuleiro privado. Tailwind fornece os tokens/utilitários; shadcn/ui fornece componentes locais sobre Radix para diálogos, botões, inputs e tooltips. Motion anima entrada de cartas e transições de etapas, respeitando a preferência de movimento reduzido. Outfit e Geist Mono são servidas localmente. A ilustração da entrada é um asset WebP de aproximadamente 82 KB, sem renderização 3D em tempo real.
+O frontend é uma SPA React/TypeScript com Vite. Não existe necessidade de SSR para o tabuleiro privado. Tailwind fornece os tokens/utilitários; shadcn/ui fornece componentes locais sobre Radix para diálogos, botões, inputs e tooltips. Motion anima entrada de cartas e transições de etapas, respeitando a preferência de movimento reduzido. Outfit e Geist Mono são servidas localmente. A ilustração da entrada é um asset WebP de aproximadamente 107 KB, sem renderização 3D em tempo real.
 
 O backend é uma aplicação NestJS. `GameGateway` administra transporte, ACK, origem, presença e limites. `GameService` é a autoridade das regras. `DatabaseService` guarda snapshots, sessões e recibos em SQLite com WAL, chaves estrangeiras e transações síncronas. Há um limite defensivo de 250 salas por instância e 12 jogadores por sala.
 
@@ -16,16 +16,18 @@ stateDiagram-v2
   lobby --> assigning: anfitrião inicia / todos prontos e conectados
   assigning --> playing: todas as identidades enviadas
   assigning --> lobby: alguém sai
-  playing --> playing: passar / tempo acabou / acerto
+  playing --> playing: passar / autor confirma acerto
   playing --> finished: todos os participantes restantes acertaram
   finished --> lobby: anfitrião prepara outra rodada
-  playing --> lobby: anfitrião encerra a rodada
-  assigning --> lobby: anfitrião encerra a rodada
+  playing --> finished: administrador encerra com confirmação
+  assigning --> finished: administrador encerra com confirmação
 ```
 
-A ordem de entrada determina a atribuição circular de identidades. A lista não muda enquanto as pessoas escolhem cartas; uma saída nessa fase invalida a distribuição e retorna à espera. Durante o jogo, quem sai fica marcado como ausente na rodada, sem redistribuir identidades já vistas. A próxima rodada elimina esses lugares antigos.
+A ordem de entrada é a ordem inicial dos assentos. O administrador pode reorganizá-la na espera; isso invalida a prontidão anterior. Essa ordem determina a atribuição circular de identidades e os turnos. A visualização gira a roda para mostrar o jogador local embaixo, preservando a vizinhança e o sentido horário. Uma pessoa descoberta mantém seu lugar, mas sai da fila de perguntas. A lista não muda enquanto as pessoas escolhem cartas; uma saída nessa fase invalida a distribuição e retorna à espera. Durante o jogo, quem sai fica marcado como ausente na rodada, sem redistribuir identidades já vistas. A próxima rodada elimina esses lugares antigos.
 
-O tempo é calculado no servidor. O navegador mostra uma projeção com ajuste de relógio e nunca decide sozinho que uma vez terminou. Uma confirmação de acerto deve vir de outro participante. Qualquer participante da mesa pode confirmar o palpite falado; não há reconhecimento automático de voz ou validação semântica do palpite.
+Não há cronômetro, pontos ou ranking. O turno só muda por ação explícita ou saída/recuperação de participantes. Só o autor da identidade (`assignmentTargetId` da sessão) pode confirmar o acerto do jogador correspondente, inclusive quando não é a vez dele. O servidor verifica a autoria e a rodada. Confirmar uma pessoa fora do turno não interrompe quem está perguntando; confirmar a pessoa ativa avança a vez. Todos os acertos exigem uma confirmação na interface. O administrador pode encerrar a partida antecipadamente, também com confirmação. Não há reconhecimento de voz ou avaliação automática do palpite.
+
+As sugestões são dados locais compartilhados: 60 por categoria temática, 270 em Tudo vale. O sorteio remove a opção da lista disponível até esgotar o conjunto e evita repetir o valor atual na renovação.
 
 ## Identidade e privacidade
 
@@ -47,7 +49,7 @@ O token é uma credencial de acesso. Use HTTPS, não registre tokens em logs e m
 | `session:replaced`     | servidor → cliente | Aviso de que outra aba assumiu a sessão           |
 | `room:closed`          | servidor → cliente | Sala encerrada/expirada                           |
 
-Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin`, `identity:set`, `turn:pass`, `turn:solve`, `room:restart`, `room:leave`.
+Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin`, `identity:set`, `turn:pass`, `player:solve`, `room:seats`, `room:finish`, `room:restart`, `room:leave`.
 
 ## Recuperação e consistência
 
@@ -55,9 +57,9 @@ Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin
 - Há heartbeat no servidor, sincronização após conectar e ao voltar à aba, atualização de presença e medição de latência. A recuperação do transporte é complementada pela recuperação da aplicação.
 - Ao perder a rede, a tela conserva o último snapshot e bloqueia comandos. O lugar permanece reservado por 120 segundos. Se o armazenamento estiver bloqueado, o navegador informa que a recarga pode perder a sessão.
 - Cada comando tem um `requestId`. O servidor guarda um recibo junto à mutação em transação. Se o ACK se perde, o cliente reenvia o mesmo ID uma vez: a alteração não é aplicada de novo. O ID reutilizado com outro conteúdo é rejeitado.
-- `identity:set` inclui a rodada. Ações de turno incluem um `turnId` único. Um clique atrasado não confirma o acerto da próxima pessoa nem altera uma rodada futura.
+- `identity:set`, `player:solve` e `room:finish` incluem a rodada; a confirmação de acerto também identifica o jogador. `turn:pass` inclui um `turnId` único. Cliques atrasados não alteram outra pessoa ou uma rodada futura. `room:seats` aceita apenas uma permutação exata dos jogadores atuais e só na espera.
 - Snapshots antigos não substituem uma versão mais nova no cliente.
-- Um reinício carrega as salas do SQLite, marca todos como offline e reabre a janela de recuperação. O tempo da vez atual é reiniciado para que a parada não consuma todo o turno.
+- Um reinício carrega as salas do SQLite, marca todos como offline e reabre a janela de recuperação. A ordem, a autoria e os segredos são preservados. Snapshots do formato anterior têm os campos de cronômetro/pontos removidos ao carregar, sem apagar a sala.
 - Se ninguém elegível está conectado, a próxima vez fica pausada até alguém voltar. Um anfitrião pode avançar uma vez; uma pessoa desconectada é removida após a janela de recuperação.
 
 ## Limites explícitos
@@ -68,7 +70,7 @@ Salas inativas expiram em 24 horas. Recibos são mantidos por 24 horas. O histó
 
 ## Verificação
 
-Vitest exercita regras, permissões, segredo, repetição segura, versões de turno, limite de pessoas, retorno ao lobby, cronômetro, expiração, migração do anfitrião e persistência. A integração sobe um NestJS real com SQLite e conecta clientes WebSocket e polling. Playwright joga uma rodada entre dois contextos, testa refresh/offline e as telas em vários tamanhos; axe-core verifica acessibilidade nas telas cobertas.
+Vitest exercita regras, permissões, segredo, repetição segura, versões de turno, limite de pessoas, retorno ao lobby, ausência de avanço por tempo, autoria, ordem dos assentos, encerramento antecipado, sugestões sem repetição, expiração, migração do anfitrião e persistência. A integração sobe um NestJS real com SQLite e conecta clientes WebSocket e polling. Playwright joga uma rodada entre dois contextos, testa refresh/offline e as telas em vários tamanhos; axe-core verifica acessibilidade nas telas cobertas.
 
 ## Histórico
 

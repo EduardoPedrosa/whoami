@@ -29,8 +29,15 @@ export class GameService implements OnModuleInit {
         player.online = false
         player.disconnectedAt = Date.now()
       }
-      if (room.phase === 'playing' && room.settings.turnSeconds)
-        room.turnEndsAt = Date.now() + room.settings.turnSeconds * 1000
+      // Upgrade persisted rooms from the timed/scored game without losing identities or seats.
+      room.settings = { category: room.settings.category }
+      delete (room as Room & { turnEndsAt?: number | null }).turnEndsAt
+      room.players.forEach((player) => {
+        delete (player as Player & { score?: number }).score
+      })
+      room.activity = room.activity
+        .filter((item) => !item.text.startsWith('O tempo de '))
+        .map((item) => ({ ...item, text: item.text.replace('! +1 ponto.', '!') }))
       room.version++
       this.db.save(room)
     }
@@ -63,7 +70,6 @@ export class GameService implements OnModuleInit {
             : null,
         solved: p.solved,
         departed: p.departed,
-        score: p.score,
       })),
       assignmentTargetId: self.assignmentTargetId,
       submittedIdentity:
@@ -72,7 +78,6 @@ export class GameService implements OnModuleInit {
           : null,
       activePlayerId: room.activePlayerId,
       turnId: room.turnId,
-      turnEndsAt: room.turnEndsAt,
       activity: room.activity,
       serverTime: Date.now(),
     }
@@ -154,7 +159,6 @@ export class GameService implements OnModuleInit {
             players: [],
             activePlayerId: null,
             turnId: null,
-            turnEndsAt: null,
             updatedAt: Date.now(),
             activity: [],
           }
@@ -186,7 +190,6 @@ export class GameService implements OnModuleInit {
           assignmentTargetId: null,
           solved: false,
           departed: false,
-          score: 0,
           disconnectedAt: null,
         }
         room.players.push(player)
@@ -254,23 +257,56 @@ export class GameService implements OnModuleInit {
             this.activity(room, `${this.active(room).name} passou a vez.`, 'game')
             this.advance(room)
             break
-          case 'turn:solve': {
-            this.requireTurn(room, command.turnId)
-            // Another participant confirms the spoken guess; nobody can reveal their own card.
-            if (room.activePlayerId === self.id)
-              return fail('CANNOT_CONFIRM_SELF', 'Outro jogador precisa confirmar seu acerto.')
-            const active = this.active(room)
-            active.solved = true
-            active.score++
-            this.activity(room, `${active.name} acertou! +1 ponto.`, 'success')
-            this.advance(room)
+          case 'player:solve': {
+            this.requirePhase(room, 'playing')
+            this.requireRound(room, command.round)
+            if (self.assignmentTargetId !== command.playerId)
+              return fail(
+                'AUTHOR_ONLY',
+                'Só quem escreveu essa identidade pode confirmar o acerto.',
+              )
+            const target = room.players.find((p) => p.id === command.playerId && !p.departed)
+            if (!target) return fail('INVALID_TARGET', 'Essa pessoa já saiu da partida.')
+            if (target.solved) return fail('ALREADY_SOLVED', 'Essa identidade já foi descoberta.')
+            target.solved = true
+            this.activity(room, `${target.name} descobriu a identidade.`, 'success')
+            if (
+              room.activePlayerId === target.id ||
+              room.players.every((p) => p.solved || p.departed)
+            )
+              this.advance(room)
+            break
+          }
+          case 'room:finish':
+            this.requireHost(room, self)
+            this.requireRound(room, command.round)
+            if (room.phase !== 'playing' && room.phase !== 'assigning')
+              return fail('INVALID_PHASE', 'Essa partida já terminou ou ainda não começou.')
+            this.finish(room, 'O administrador encerrou a partida.')
+            break
+          case 'room:seats': {
+            this.requireHost(room, self)
+            this.requirePhase(room, 'lobby')
+            const ids = command.playerIds
+            if (
+              ids.length !== room.players.length ||
+              new Set(ids).size !== ids.length ||
+              ids.some((id) => !room!.players.some((p) => p.id === id))
+            )
+              return fail('STALE_SEATS', 'Os jogadores mudaram. Confira a ordem da roda novamente.')
+            room.players = ids.map((id) => room!.players.find((p) => p.id === id)!)
+            room.players.forEach((p) => {
+              p.ready = false
+            })
+            this.activity(room, 'A ordem da roda foi ajustada.', 'game')
             break
           }
           case 'room:restart':
             this.requireHost(room, self)
+            this.requirePhase(room, 'finished')
             room.phase = 'lobby'
             room.activePlayerId = null
-            room.turnEndsAt = null
+            room.turnId = null
             room.players = room.players.filter((p) => !p.departed)
             room.players.forEach((p) => {
               p.identity = null
@@ -278,7 +314,7 @@ export class GameService implements OnModuleInit {
               p.solved = false
               p.ready = false
             })
-            this.activity(room, 'Mesa pronta para uma nova rodada.', 'game')
+            this.activity(room, 'Sala pronta para uma nova rodada.', 'game')
             break
           case 'room:leave':
             this.remove(room, self.id)
@@ -316,6 +352,10 @@ export class GameService implements OnModuleInit {
     if (room.phase !== phase)
       return fail('INVALID_PHASE', 'A partida avançou. Sua tela já está sendo atualizada.')
   }
+  private requireRound(room: Room, round: number) {
+    if (room.round !== round)
+      return fail('STALE_ROUND', 'A rodada mudou. Confira a tela novamente.')
+  }
   private requireTurn(room: Room, turnId: string) {
     this.requirePhase(room, 'playing')
     if (!room.activePlayerId || room.turnId !== turnId)
@@ -327,17 +367,11 @@ export class GameService implements OnModuleInit {
   private setActive(room: Room, id: string) {
     room.activePlayerId = id
     room.turnId = randomUUID()
-    room.turnEndsAt = room.settings.turnSeconds
-      ? Date.now() + room.settings.turnSeconds * 1000
-      : null
   }
   private advance(room: Room) {
     const eligible = room.players.filter((p) => !p.solved && !p.departed)
     if (eligible.length === 0) {
-      room.phase = 'finished'
-      room.activePlayerId = null
-      room.turnEndsAt = null
-      this.activity(room, 'Todo mundo se descobriu. Que rodada!', 'success')
+      this.finish(room, 'Todos descobriram suas identidades.')
       return
     }
     const index = room.players.findIndex((p) => p.id === room.activePlayerId)
@@ -350,7 +384,12 @@ export class GameService implements OnModuleInit {
     }
     // Pause while every remaining player reconnects; tick resumes when someone returns.
     room.activePlayerId = null
-    room.turnEndsAt = null
+  }
+  private finish(room: Room, message: string) {
+    room.phase = 'finished'
+    room.activePlayerId = null
+    room.turnId = null
+    this.activity(room, message, 'success')
   }
   private remove(room: Room, playerId: string) {
     const player = room.players.find((p) => p.id === playerId)
@@ -415,15 +454,7 @@ export class GameService implements OnModuleInit {
         continue
       }
       if (room.phase === 'playing') {
-        if (room.turnEndsAt !== null && room.turnEndsAt <= now) {
-          this.activity(
-            room,
-            `O tempo de ${this.active(room).name} acabou. Próxima pessoa!`,
-            'game',
-          )
-          this.advance(room)
-          dirty = true
-        } else if (
+        if (
           !room.activePlayerId &&
           room.players.some((p) => !p.solved && !p.departed && p.online)
         ) {

@@ -11,27 +11,22 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { gameClient } from '@/lib/game-client'
-import { ArrowRight, CheckCircle, HourglassMedium, Sparkle } from '@phosphor-icons/react'
-import { type RoomView } from '@whoami/shared'
+import { ArrowRight, CheckCircle, HourglassMedium } from '@phosphor-icons/react'
+import type { RoomView } from '@whoami/shared'
 import { useState } from 'react'
-
-import { Countdown } from '@/features/room/components/countdown'
-import { IdentityCard } from '@/features/room/components/identity-card'
+import { CircleTable } from '@/features/room/components/circle-table'
 
 export function Playing({ room, disabled }: { room: RoomView; disabled: boolean }) {
   const active = room.players.find((p) => p.id === room.activePlayerId)
   const isMyTurn = active?.id === room.selfId
-  const [confirmation, setConfirmation] = useState<{ name: string; turnId: string } | null>(null)
-  const ordered = [...room.players].sort(
-    (a, b) => Number(b.id === room.selfId) - Number(a.id === room.selfId),
+  const target = room.players.find(
+    (p) => p.id === room.assignmentTargetId && !p.solved && !p.departed,
   )
-  async function confirm() {
-    if (
-      confirmation &&
-      (await gameClient.command({ type: 'turn:solve', turnId: confirmation.turnId }))
-    )
-      setConfirmation(null)
-  }
+  const [confirmation, setConfirmation] = useState<{
+    name: string
+    playerId: string
+    round: number
+  } | null>(null)
   return (
     <div className="playing-content">
       <div className="turn-banner">
@@ -43,7 +38,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
           )}
         </div>
         <div className="turn-copy">
-          <span>{isMyTurn ? 'SUA VEZ' : 'VEZ DE RESPONDER'}</span>
+          <span>{isMyTurn ? 'SUA VEZ' : 'NA RODA'}</span>
           <h2>
             {isMyTurn
               ? 'Sua vez de descobrir.'
@@ -52,36 +47,14 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
                 : 'Esperando a conexão voltar.'}
           </h2>
           <p>
-            {isMyTurn
-              ? 'Faça perguntas de sim ou não em voz alta.'
-              : active
-                ? 'Responda às perguntas com sim ou não, sem revelar a identidade.'
-                : 'A rodada continua quando alguém reconectar.'}
+            {active
+              ? 'Sigam a mesma ordem da roda em que vocês estão sentados.'
+              : 'A partida continua quando alguém se reconectar.'}
           </p>
         </div>
-        <Countdown room={room} />
       </div>
-      <div className="game-board">
-        {ordered.map((player, index) => (
-          <IdentityCard
-            key={`${room.round}-${player.id}`}
-            player={player}
-            room={room}
-            index={index}
-          />
-        ))}
-      </div>
+      <CircleTable room={room} />
       <div className="turn-controls">
-        <div className="turn-hint">
-          <Sparkle size={20} aria-hidden="true" />
-          <p>
-            {isMyTurn
-              ? 'Uma boa primeira pergunta: “Eu existo na vida real?”'
-              : active
-                ? `${active.name} falou a identidade certa? Confirme o acerto.`
-                : 'Aguarde os outros jogadores se reconectarem.'}
-          </p>
-        </div>
         <div className="turn-buttons">
           {active && (isMyTurn || room.hostId === room.selfId) && (
             <Button
@@ -95,19 +68,26 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
               <ArrowRight size={17} aria-hidden="true" />
             </Button>
           )}
-          {active && !isMyTurn && (
+          {target && (
             <Button
-              disabled={disabled || !active.online}
-              onClick={() => setConfirmation({ name: active.name, turnId: room.turnId! })}
+              disabled={disabled}
+              onClick={() =>
+                setConfirmation({ name: target.name, playerId: target.id, round: room.round })
+              }
             >
               <CheckCircle size={19} aria-hidden="true" />
-              Confirmar acerto
+              Confirmar acerto de {target.name}
             </Button>
           )}
         </div>
+        {target && (
+          <p className="author-note">
+            Você escreveu a identidade de {target.name}. Só você pode confirmar esse acerto.
+          </p>
+        )}
       </div>
       <AlertDialog
-        open={!!confirmation}
+        open={!!confirmation && !!target && confirmation.playerId === target.id}
         onOpenChange={(open) => {
           if (!open) setConfirmation(null)
         }}
@@ -116,17 +96,25 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
           <AlertDialogHeader>
             <AlertDialogTitle>{confirmation?.name} descobriu a identidade?</AlertDialogTitle>
             <AlertDialogDescription>
-              Confirme apenas se a pessoa falou a identidade certa em voz alta. A carta será
-              revelada e ela ganhará um ponto.
+              A identidade será revelada para {confirmation?.name}, que deixará de perguntar nos
+              próximos turnos. Os demais continuam jogando.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={disabled}>Ainda não</AlertDialogCancel>
             <AlertDialogAction
               disabled={disabled}
-              onClick={(event) => {
+              onClick={async (event) => {
                 event.preventDefault()
-                void confirm()
+                if (
+                  confirmation &&
+                  (await gameClient.command({
+                    type: 'player:solve',
+                    playerId: confirmation.playerId,
+                    round: confirmation.round,
+                  }))
+                )
+                  setConfirmation(null)
               }}
             >
               Sim, acertou!

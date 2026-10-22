@@ -11,6 +11,7 @@ import {
 } from '@phosphor-icons/react'
 import { type RoomView } from '@whoami/shared'
 
+import { SeatingOrder } from '@/features/room/components/seating-order'
 import { Settings } from '@/features/room/components/room-settings'
 
 export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean }) {
@@ -35,10 +36,11 @@ export function Lobby({ room, disabled }: { room: RoomView; disabled: boolean })
         <p>
           {room.players.length < 2
             ? 'Você precisa de pelo menos mais uma pessoa para jogar. Compartilhe o link ou o código da sala.'
-            : 'Escolham a categoria e o tempo de cada turno. Depois, cada pessoa confirma que está pronta.'}
+            : 'Escolham a categoria, confiram a ordem da roda e avisem quando estiverem prontos.'}
         </p>
       </div>
       <Settings room={room} disabled={disabled} />
+      <SeatingOrder room={room} disabled={disabled} />
       <div className="lobby-rules">
         <div>
           <IdentificationCard size={24} weight="duotone" aria-hidden="true" />

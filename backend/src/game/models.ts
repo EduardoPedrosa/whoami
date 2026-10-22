@@ -10,7 +10,6 @@ export interface Player {
   assignmentTargetId: string | null
   solved: boolean
   departed: boolean
-  score: number
   disconnectedAt: number | null
 }
 export interface Room {
@@ -23,7 +22,6 @@ export interface Room {
   players: Player[]
   activePlayerId: string | null
   turnId: string | null
-  turnEndsAt: number | null
   updatedAt: number
   activity: Activity[]
 }

@@ -98,7 +98,7 @@ describe('real Socket.IO transport', () => {
     const created = await command(a.socket, {
       type: 'room:create',
       profile: { name: 'Alice', avatar: 'planet' },
-      settings: { category: 'Tudo vale', turnSeconds: 90 },
+      settings: { category: 'Tudo vale' },
     })
     expect(created.ok && created.room?.phase).toBe('lobby')
     if (!created.ok || !created.room) throw new Error('Room missing')
@@ -141,7 +141,7 @@ describe('real Socket.IO transport', () => {
     await command(a.socket, {
       type: 'room:create',
       profile: { name: 'Charlie', avatar: 'cat' },
-      settings: { category: 'Tudo vale', turnSeconds: 0 },
+      settings: { category: 'Tudo vale' },
     })
     const replaced = new Promise<void>((resolve) => a.socket.once('session:replaced', resolve))
     const disconnected = new Promise<void>((resolve) =>

@@ -1,25 +1,21 @@
 import { Avatar } from '@/components/avatar'
 import { Button } from '@/components/ui/button'
 import { gameClient } from '@/lib/game-client'
-import { Shuffle, Trophy } from '@phosphor-icons/react'
-import { type RoomView } from '@whoami/shared'
+import { Shuffle, IdentificationCard } from '@phosphor-icons/react'
+import type { RoomView } from '@whoami/shared'
 
 export function Results({ room, disabled }: { room: RoomView; disabled: boolean }) {
-  const players = [...room.players].sort((a, b) => b.score - a.score)
   return (
     <div className="results-content">
       <div className="results-icon">
-        <Trophy size={50} weight="duotone" aria-hidden="true" />
+        <IdentificationCard size={50} weight="duotone" aria-hidden="true" />
       </div>
-      <span className="small-tag">RODADA {room.round} CONCLUÍDA</span>
+      <span className="small-tag">RODADA {room.round} ENCERRADA</span>
       <h2>Fim da rodada!</h2>
-      <p>Confira as identidades e os pontos. Vamos jogar de novo?</p>
+      <p>Agora todo mundo pode ver quem era quem.</p>
       <ul className="result-list">
-        {players.map((player) => (
+        {room.players.map((player) => (
           <li key={player.id}>
-            <span className="result-place">
-              {players.findIndex((other) => other.score === player.score) + 1}
-            </span>
             <Avatar avatar={player.avatar} />
             <div>
               <strong>
@@ -27,13 +23,12 @@ export function Results({ room, disabled }: { room: RoomView; disabled: boolean 
                 {player.id === room.selfId ? ' (você)' : ''}
               </strong>
               <span>
-                {player.identity || 'Sem identidade'}
+                {player.identity || 'Identidade não escolhida'}
                 {player.departed ? ' · saiu da rodada' : ''}
               </span>
             </div>
-            <span className="result-score">
-              {player.score}
-              <small>{player.score === 1 ? 'ponto' : 'pontos'}</small>
+            <span className="result-status">
+              {player.departed ? 'Saiu' : player.solved ? 'Descobriu' : 'Revelada no fim'}
             </span>
           </li>
         ))}
@@ -50,7 +45,9 @@ export function Results({ room, disabled }: { room: RoomView; disabled: boolean 
           Mais uma rodada
         </Button>
       ) : (
-        <p className="text-sm text-muted-foreground">O anfitrião pode preparar a próxima rodada.</p>
+        <p className="text-sm text-muted-foreground">
+          O administrador pode preparar a próxima rodada.
+        </p>
       )}
     </div>
   )

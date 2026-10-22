@@ -8,8 +8,8 @@ Executada em 21/10/2026, macOS/Apple Silicon com Node 22.21.1 e Chrome. O empaco
 | TypeScript                                  | Frontend, backend, contratos, testes e configuração sem erros                                 |
 | Prettier                                    | Padrão consistente em todos os arquivos cobertos                                              |
 | Build local                                 | Contratos ESM/CJS, NestJS e Vite compilados                                                   |
-| Vitest                                      | 18 testes de regras, persistência e integração reais passaram                                 |
-| Playwright em produção Docker               | 5 testes passaram sobre Nginx + NestJS                                                        |
+| Vitest                                      | 24 testes de regras, sugestões, persistência e integração reais passaram                      |
+| Playwright em produção Docker               | 6 testes passaram sobre Nginx + NestJS                                                        |
 | Acessibilidade axe-core                     | Sem violações nas telas cobertas: entrada, ajuda, espera, atribuição, partida e resultado     |
 | Responsividade                              | 320, 375, 390, 768, 812, 1024 e 1440px; verificações de overflow e capturas                   |
 | WebSocket bloqueado                         | Entrada e comando de prontidão funcionam por polling                                          |
@@ -38,6 +38,16 @@ A entrada agora usa tema claro, azul cobalto e ilustração com transparência. 
 O menu foi verificado sem rolagem vertical nos modos criar e entrar em 1440 × 1000, 1024 × 768, 768 × 1024, 375 × 812, 320 × 700, 320 × 568, 812 × 375 e 667 × 375. O teste verifica a altura do documento e a posição do título, ilustração, informações e botão principal. Em paisagem, as informações ocupam a coluna da ilustração para liberar espaço ao formulário.
 
 A rolagem permanece disponível quando necessária, por exemplo com teclado aberto, zoom, avisos ou mensagens de validação. Não há bloqueio global de overflow. A sala e os diálogos também usam o tema claro. A auditoria axe-core cobre a nova escolha de avatar e as telas da partida. Os cinco testes de navegador passaram também no build de produção via Docker; a entrada do segundo jogador inclui seleção do avatar por toque.
+
+## Roda presencial e confirmação por autoria
+
+O tabuleiro voltou a mostrar os lugares em roda, com o jogador local embaixo e a sequência dos próximos turnos. O administrador ajusta a ordem dos assentos antes de começar. Os testes com 12 pessoas verificam que as cartas não se sobrepõem em 1440, 1024, 375 e 320px; tocar numa carta abre sua versão legível, preservando a identidade secreta da própria pessoa.
+
+Cronômetro, dicas de perguntas, pontuação e ranking foram removidos. Só quem escreveu uma identidade pode confirmar o acerto daquele jogador, com confirmação na interface e autorização no servidor. Quem descobriu continua no mesmo lugar, mas não volta à fila de perguntas. Confirmar alguém fora do turno não interrompe a pessoa ativa. O administrador pode encerrar antecipadamente, após confirmação; cancelar mantém a partida. Outra rodada só pode ser preparada depois do encerramento.
+
+As sugestões aumentaram para 60 por categoria e 270 em Tudo vale, com sorteio sem repetição até percorrer a lista. A carta de atribuição foi alinhada. Os testes também cobrem atualização de snapshots antigos, preservando segredos, lugares e autoria ao remover os dados de tempo e pontos.
+
+Capturas desta revisão: [atribuição alinhada](../assets/assigning-desktop.png), [atribuição no celular](../assets/assigning-mobile.png), [roda com 12 pessoas](../assets/circle-twelve-1440.png) e [roda com 12 no celular](../assets/circle-twelve-320.png).
 
 ## Antes e depois
 

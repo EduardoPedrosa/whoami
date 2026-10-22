@@ -23,7 +23,6 @@ export const AVATARS = [
 export type Avatar = (typeof AVATARS)[number]
 export const settingsSchema = z.object({
   category: z.enum(CATEGORIES),
-  turnSeconds: z.union([z.literal(0), z.literal(60), z.literal(90), z.literal(120)]),
 })
 export type RoomSettings = z.infer<typeof settingsSchema>
 export const profileSchema = z.object({
@@ -70,7 +69,18 @@ export const commandSchema = z.discriminatedUnion('type', [
       .regex(/^[^\p{Cc}]+$/u),
   }),
   z.object({ ...request, type: z.literal('turn:pass'), turnId: id }),
-  z.object({ ...request, type: z.literal('turn:solve'), turnId: id }),
+  z.object({
+    ...request,
+    type: z.literal('player:solve'),
+    playerId: id,
+    round: z.number().int().positive(),
+  }),
+  z.object({ ...request, type: z.literal('room:finish'), round: z.number().int().positive() }),
+  z.object({
+    ...request,
+    type: z.literal('room:seats'),
+    playerIds: z.array(id).min(1).max(MAX_PLAYERS),
+  }),
   z.object({ ...request, type: z.literal('room:restart') }),
   z.object({ ...request, type: z.literal('room:leave') }),
 ])
@@ -91,7 +101,6 @@ export interface PlayerView {
   identity: string | null
   solved: boolean
   departed: boolean
-  score: number
 }
 export interface Activity {
   id: string
@@ -112,7 +121,6 @@ export interface RoomView {
   submittedIdentity: string | null
   activePlayerId: string | null
   turnId: string | null
-  turnEndsAt: number | null
   activity: Activity[]
   serverTime: number
 }
@@ -134,38 +142,4 @@ export interface ClientEvents {
   sync: (ack: (response: Ack) => void) => void
   ping: (ack: (timestamp: number) => void) => void
 }
-export const IDENTITY_SUGGESTIONS: Record<RoomSettings['category'], string[]> = {
-  'Tudo vale': [
-    'Um astronauta',
-    'Sherlock Holmes',
-    'Uma capivara',
-    'Uma estrela do rock',
-    'Um detetive',
-    'Um dragão',
-  ],
-  'Cinema e séries': [
-    'Darth Vader',
-    'Hermione Granger',
-    'Shrek',
-    'Wandinha',
-    'Indiana Jones',
-    'Elsa',
-  ],
-  'Mundo pop': ['Beyoncé', 'Neymar', 'Taylor Swift', 'Silvio Santos', 'Lady Gaga', 'Ayrton Senna'],
-  'Animais e natureza': [
-    'Uma capivara',
-    'Um polvo',
-    'Uma girafa',
-    'Um pinguim',
-    'Um vulcão',
-    'Uma borboleta',
-  ],
-  'História e cultura': [
-    'Cleópatra',
-    'Albert Einstein',
-    'Frida Kahlo',
-    'Machado de Assis',
-    'Leonardo da Vinci',
-    'Santos Dumont',
-  ],
-}
+export { IDENTITY_SUGGESTIONS } from './identity-suggestions'

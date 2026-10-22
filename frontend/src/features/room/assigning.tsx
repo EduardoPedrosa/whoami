@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { gameClient } from '@/lib/game-client'
 import { cn } from '@/lib/utils'
+import { createIdentitySuggester } from '@/lib/identity-suggestions'
 import { ArrowRight, Check, CheckCircle, LockSimple, Shuffle } from '@phosphor-icons/react'
 import { IDENTITY_SUGGESTIONS, type RoomView } from '@whoami/shared'
 import { useState, type FormEvent } from 'react'
@@ -13,8 +14,9 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
   const [identity, setIdentity] = useState(room.submittedIdentity || '')
   const [editing, setEditing] = useState(false)
   const [localError, setLocalError] = useState<string | null>(null)
-  const [suggestionIndex, setSuggestionIndex] = useState(0)
-  const suggestions = IDENTITY_SUGGESTIONS[room.settings.category]
+  const [suggestIdentity] = useState(() =>
+    createIdentitySuggester(IDENTITY_SUGGESTIONS[room.settings.category]),
+  )
   const assigned = room.players.filter((p) => p.hasAssigned).length
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -96,8 +98,11 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
             variant="ghost"
             size="sm"
             onClick={() => {
-              setIdentity(suggestions[suggestionIndex % suggestions.length]!)
-              setSuggestionIndex((i) => i + 1)
+              const suggestion = suggestIdentity(identity)
+              if (suggestion) {
+                setIdentity(suggestion)
+                setLocalError(null)
+              }
             }}
           >
             <Shuffle size={17} aria-hidden="true" />

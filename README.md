@@ -6,7 +6,7 @@
 
 - Frontend inteiramente em **TypeScript + React 19 + Vite 8**, **Tailwind 4**, componentes **shadcn/ui/Radix** e Motion. Tema claro com azul cobalto, menu inicial compacto, fontes locais, arte própria, avatares, navegação por teclado, movimento reduzido e layouts para celular.
 - Backend **NestJS 12 + Socket.IO 4**, com regras e validação no servidor. Tipos, schemas Zod e dados de categorias compartilhados entre os dois projetos.
-- Salas por código/link, anfitrião, prontidão, categorias, cronômetro opcional, turnos, confirmação de acerto por outra pessoa, resultados e pontos acumulados entre rodadas.
+- Salas por código/link, administrador, prontidão, categorias, ordem de assentos ajustável e jogadores em roda. Sem cronômetro ou pontuação; só quem escreveu uma identidade confirma o acerto daquela pessoa.
 - Reconexão com sessão estável, snapshot completo, ACK com reenvio seguro e controle de versão/turno. O lugar fica reservado por 2 minutos. Recarregar não troca sua identidade.
 - Estado salvo em **SQLite**, com WAL e transações. Salas e sessões sobrevivem ao reinício do backend se o arquivo/volume for preservado.
 
@@ -37,7 +37,7 @@ Para usar celulares na mesma rede, abra `http://IP-DA-MAQUINA:3000` e adicione e
 | `yarn dev:frontend` / `yarn dev:backend` | Executa apenas um serviço; compile os contratos antes com `yarn build:shared`          |
 | `yarn lint`                              | ESLint para todo o código                                                              |
 | `yarn typecheck`                         | Verificação de tipos dos contratos e aplicações                                        |
-| `yarn test`                              | Regras do jogo e integração real via Socket.IO                                         |
+| `yarn test`                              | Regras, sugestões e integração real via Socket.IO                                      |
 | `yarn test:e2e`                          | Partida completa, recuperação de conexão, responsividade e acessibilidade no navegador |
 | `yarn format` / `yarn format:check`      | Formata/verifica o padrão do repositório                                               |
 | `yarn verify`                            | Lint, tipos, testes de backend e build                                                 |
@@ -85,12 +85,13 @@ O volume `game-data` mantém o SQLite. Faça backups consistentes com a API `bac
 
 ## Como a partida funciona
 
-1. Crie a sala e compartilhe o convite. Escolha a categoria e o tempo de cada turno.
-2. Todos marcam **Estou pronto**; o anfitrião inicia a rodada.
-3. Cada pessoa escolhe quem o próximo jogador será. O jogo começa quando todos enviam.
-4. Na sua vez, faça perguntas de sim ou não em voz alta. Continue até acertar, passar ou acabar o tempo.
-5. Quando disser a identidade certa, outra pessoa confirma o acerto. Sua carta aparece e você ganha 1 ponto.
-6. Quando todos os participantes restantes acertam, a rodada termina. O anfitrião pode organizar outra, mantendo os pontos.
+1. Crie a sala e compartilhe o convite. Escolha a categoria e ajuste a ordem da roda para corresponder aos lugares físicos, no sentido horário.
+2. Todos marcam **Estou pronto**; o administrador inicia a rodada.
+3. Cada pessoa escolhe a identidade do próximo lugar da roda. Há 60 sugestões por categoria e 270 em **Tudo vale**, sorteadas sem repetir a sequência.
+4. Na sua vez, faça perguntas em voz alta e passe a vez quando quiser. A roda mostra você embaixo, os lugares fixos e quem pergunta a seguir.
+5. Quem escreveu sua identidade pode confirmar seu acerto, após confirmação em uma janela. Você deixa de perguntar nos turnos seguintes e os demais continuam.
+6. A rodada termina quando todos descobrem suas identidades ou quando o administrador escolhe **Encerrar partida** e confirma. As identidades são reveladas, sem ranking ou pontos.
+7. O administrador pode iniciar outra rodada, mantendo a ordem dos lugares.
 
 A aplicação não transmite áudio/vídeo. Uma desconexão temporária mantém o lugar por 2 minutos; depois disso o participante é removido e o anfitrião é transferido se necessário. Se alguém sai durante a escolha de identidades, a mesa volta à espera para reorganizar as cartas.
 

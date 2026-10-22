@@ -42,9 +42,7 @@
   .lobby-content {
     padding: 34px;
   }
-  .game-board {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+
   .identity-card-body h3 {
     font-size: 24px;
   }
@@ -253,20 +251,11 @@
   .turn-avatar {
     display: none;
   }
-  .countdown {
-    padding: 9px 8px;
-    gap: 5px;
-  }
-  .countdown span {
-    font-size: 16px;
-  }
+
   .countdown svg {
     width: 17px;
   }
-  .game-board {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
+
   .identity-card {
     min-height: 240px;
     border-radius: 16px;
@@ -342,13 +331,7 @@
   .result-list div > span {
     font-size: 10px;
   }
-  .result-score {
-    font-size: 19px;
-  }
-  .result-place {
-    font-size: 10px;
-    width: 12px;
-  }
+
   .connection-banner {
     padding: 15px;
     flex-wrap: wrap;

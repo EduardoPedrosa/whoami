@@ -8,7 +8,7 @@ import { Assigning } from '@/features/room/assigning'
 import { Invite } from '@/features/room/components/invite-dialog'
 import { LeaveRoom } from '@/features/room/components/leave-room'
 import { PlayerRoster } from '@/features/room/components/player-roster'
-import { Restart } from '@/features/room/components/restart-dialog'
+import { EndGame } from '@/features/room/components/end-game'
 import { RoomSteps } from '@/features/room/components/room-steps'
 import { Lobby } from '@/features/room/lobby'
 import { Playing } from '@/features/room/playing'
@@ -80,7 +80,7 @@ export function RoomScreen({ room }: { room: RoomView }) {
           Sua carta só aparece para você quando acertar ou quando a rodada terminar.
         </span>
         {room.hostId === room.selfId && room.phase !== 'lobby' && room.phase !== 'finished' && (
-          <Restart disabled={disabled} />
+          <EndGame room={room} disabled={disabled} />
         )}
       </div>
     </main>
