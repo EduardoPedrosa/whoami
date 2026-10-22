@@ -76,11 +76,6 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
             </Button>
           )}
         </div>
-        {target && (
-          <p className="author-note">
-            Você escreveu a identidade de {target.name}. Só você pode confirmar esse acerto.
-          </p>
-        )}
       </div>
       <AlertDialog
         open={!!confirmation && !!target && confirmation.playerId === target.id}

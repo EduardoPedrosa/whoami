@@ -1,7 +1,7 @@
 import { Avatar } from '@/components/avatar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { CheckCircle, Crown, HourglassMedium, SpeakerHigh } from '@phosphor-icons/react'
+import { CheckCircle, Crown, HourglassMedium } from '@phosphor-icons/react'
 import { MAX_PLAYERS, type RoomView } from '@whoami/shared'
 
 export function PlayerRoster({ room }: { room: RoomView }) {
@@ -65,13 +65,6 @@ export function PlayerRoster({ room }: { room: RoomView }) {
             </li>
           ))}
       </ul>
-      <div className="table-tip">
-        <SpeakerHigh aria-hidden="true" size={21} />
-        <div>
-          <strong>Áudio externo</strong>
-          <p>Conversem pessoalmente ou em uma chamada. O jogo não transmite áudio.</p>
-        </div>
-      </div>
       <div className="activity-section">
         <h3>Atividade recente</h3>
         <ul aria-label="Atividade recente">

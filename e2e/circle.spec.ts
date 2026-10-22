@@ -76,6 +76,8 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
     ).toBeVisible()
     for (const viewport of [
       { width: 1440, height: 1000 },
+      { width: 1280, height: 720 },
+      { width: 1440, height: 900 },
       { width: 1024, height: 768 },
       { width: 375, height: 812 },
       { width: 320, height: 700 },
@@ -84,6 +86,11 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,
       )
+      if (viewport.width >= 1280) {
+        expect(
+          await page.evaluate(() => document.documentElement.scrollHeight),
+        ).toBeLessThanOrEqual(viewport.height + 1)
+      }
       const seats = await page.locator('.circle-seat').all()
       const boxes = await Promise.all(seats.map((seat) => seat.boundingBox()))
       for (let i = 0; i < boxes.length; i++) {

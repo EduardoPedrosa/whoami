@@ -28,6 +28,22 @@ async function assertNoOverflow(page: Page) {
   )
 }
 
+async function assertLaptopLayouts(page: Page) {
+  const original = page.viewportSize()!
+  for (const viewport of [
+    { width: 1280, height: 720 },
+    { width: 1440, height: 900 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await assertNoOverflow(page)
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(
+      viewport.height + 1,
+    )
+    await expect(page.getByText('Áudio externo', { exact: true })).toHaveCount(0)
+  }
+  await page.setViewportSize(original)
+}
+
 async function assertDialogFits(page: Page) {
   const dialog = page.getByRole('dialog').or(page.getByRole('alertdialog'))
   await expect(dialog).toHaveCSS('opacity', '1')
@@ -90,6 +106,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     const code = await create(a)
     await join(b, code)
     await expect(a.locator('.player-roster li')).toHaveCount(2)
+    await assertLaptopLayouts(a)
     await assertMobileLayouts(b)
     await b.setViewportSize({ width: 812, height: 375 })
     await b.getByRole('button', { name: /Convidar amigos/ }).click()
@@ -104,6 +121,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await a.getByRole('button', { name: 'Começar rodada' }).click()
     await expect(a.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
     await expect(b.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
+    await assertLaptopLayouts(a)
     await assertMobileLayouts(b)
     await assertAccessible(a)
     const suggestions = new Set<string>()
@@ -120,6 +138,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await b.getByLabel('Quem essa pessoa vai ser?').fill('Uma capivara')
     await b.getByRole('button', { name: 'Enviar identidade' }).click()
     await expect(a.getByRole('heading', { name: 'Sua vez' })).toBeVisible()
+    await assertLaptopLayouts(a)
     await expect(a.locator('.circle-own')).not.toContainText('Uma capivara')
     await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
     await expect(a.locator('.circle-seat').filter({ hasText: 'Bob' })).toContainText(
@@ -158,6 +177,7 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await a.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
     await expect(a.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
     await expect(b.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
+    await assertLaptopLayouts(a)
     await assertMobileLayouts(b)
     await assertAccessible(a)
     await a.screenshot({ path: 'test-results/results-desktop.png', fullPage: true })
@@ -272,6 +292,76 @@ test('no serious accessibility violations on home, help and lobby', async ({ pag
   await scan()
   await page.setViewportSize({ width: 375, height: 812 })
   await scan()
+})
+
+test('custom category select supports keyboard, touch and synchronized settings', async ({
+  browser,
+}) => {
+  const host = await browser.newContext({ hasTouch: true })
+  const guest = await browser.newContext()
+  const a = await host.newPage()
+  const b = await guest.newPage()
+  try {
+    const code = await create(a)
+    await b.goto(`/?sala=${code}`)
+    await b.getByLabel('Seu nome').fill('Beatriz')
+    await b.getByRole('button', { name: 'Entrar na sala', exact: true }).click()
+    const category = a.locator('#category')
+    const guestCategory = b.getByRole('combobox', { name: 'Categoria' })
+    await expect(guestCategory).toBeDisabled()
+    await category.focus()
+    await a.keyboard.press('Enter')
+    await expect(a.getByRole('listbox')).toBeVisible()
+    await expect(a.getByRole('option', { name: 'Tudo vale', exact: true })).toBeFocused()
+    await a.keyboard.press('End')
+    await expect(a.getByRole('option', { name: 'História e cultura', exact: true })).toBeFocused()
+    await a.keyboard.press('Enter')
+    await expect(category).toHaveText('História e cultura')
+    await expect(guestCategory).toHaveText('História e cultura')
+    await expect(category).toBeFocused()
+    for (const viewport of [
+      { width: 1440, height: 1000 },
+      { width: 375, height: 812 },
+      { width: 320, height: 700 },
+      { width: 812, height: 375 },
+    ]) {
+      await a.setViewportSize(viewport)
+      await category.tap()
+      const list = a.getByRole('listbox')
+      await expect(list).toBeVisible()
+      await assertNoOverflow(a)
+      const box = (await list.boundingBox())!
+      expect(box.x).toBeGreaterThanOrEqual(0)
+      expect(box.y).toBeGreaterThanOrEqual(0)
+      expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
+      expect(box.y + box.height).toBeLessThanOrEqual(viewport.height)
+      const trigger = (await category.boundingBox())!
+      const icon = (await category.locator('svg').boundingBox())!
+      expect(Math.abs(icon.y + icon.height / 2 - trigger.y - trigger.height / 2)).toBeLessThan(1)
+      expect(icon.x + icon.width).toBeLessThanOrEqual(trigger.x + trigger.width - 11)
+      if (viewport.width === 1440) {
+        // Audit the popup separately: Radix hides and traps focus outside the open listbox.
+        const result = await new AxeBuilder({ page: a })
+          .include('[data-slot="select-content"]')
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+        expect(result.violations).toEqual([])
+      }
+      await a.screenshot({ path: `test-results/category-${viewport.width}.png`, fullPage: false })
+      await expect(list).toBeVisible()
+      await a.keyboard.press('Escape')
+      await expect(list).toHaveCount(0)
+      await expect(category).toBeFocused()
+    }
+    await category.tap()
+    await a.getByRole('option', { name: 'Animais e natureza', exact: true }).tap()
+    await expect(guestCategory).toHaveText('Animais e natureza')
+    await a.reload()
+    await expect(category).toHaveText('Animais e natureza')
+  } finally {
+    await host.close()
+    await guest.close()
+  }
 })
 
 test('falls back to polling when WebSocket is blocked', async ({ page }) => {
