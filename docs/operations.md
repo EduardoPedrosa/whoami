@@ -1,6 +1,10 @@
 # Operação e publicação
 
-## Topologia recomendada
+## Cloudflare e CapRover
+
+A publicação usa frontend estático na Cloudflare e uma instância NestJS no CapRover, com HTTPS e WebSocket. O backend usa `STORAGE_MODE=memory`, sem banco nem volume. Quedas breves de conexão preservam o lugar por dois minutos enquanto o processo está ativo; reinícios e atualizações encerram as salas abertas. O GitHub Actions compila, testa, publica a imagem e entrega ao CapRover sua referência imutável. Veja [configuração, variáveis e comandos de validação](cloudflare-caprover.md).
+
+## Docker com persistência opcional
 
 Comece com uma instância NestJS, um volume persistente e um proxy HTTPS. O Compose inclui Nginx para os arquivos estáticos e encaminha `/api` e `/socket.io` ao backend na rede interna. Apenas a porta do frontend é publicada.
 

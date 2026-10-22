@@ -8,7 +8,7 @@
 - Backend **NestJS 12 + Socket.IO 4**, com regras e validação no servidor. Tipos, schemas Zod e dados de categorias compartilhados entre os dois projetos.
 - Salas por código/link, administrador, prontidão, categorias, ordem de assentos ajustável e jogadores em roda. Sem cronômetro ou pontuação; só quem escreveu uma identidade confirma o acerto daquela pessoa.
 - Reconexão com sessão estável, snapshot completo, ACK com reenvio seguro e controle de versão/turno. O lugar fica reservado por 2 minutos. Recarregar não troca sua identidade.
-- Estado salvo em **SQLite**, com WAL e transações. Salas e sessões sobrevivem ao reinício do backend se o arquivo/volume for preservado.
+- Estado em **memória no CapRover**, sem banco. SQLite com WAL e transações continua disponível para quem precisar preservar salas e sessões após reinícios.
 
 ## Rodar em desenvolvimento
 

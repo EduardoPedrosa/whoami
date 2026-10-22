@@ -45,6 +45,16 @@ Os builds automáticos do Worker antigo `whoami-api` foram desativados. O backen
 
 Após cada deploy, confira saúde, criação e entrada em sala, reconexão e uma rodada entre duas sessões. O frontend já compilado não recebe mudanças de variável em tempo de execução.
 
+Para executar a suíte completa contra a publicação, informe as duas origens:
+
+```bash
+E2E_BASE_URL=https://whoami.eduardopedrosa-dev.workers.dev \
+E2E_SOCKET_URL=https://whoami-api.eplabs.com.br \
+yarn test:e2e
+```
+
+`E2E_SOCKET_URL` é usada pelos clientes Socket.IO de teste que montam a roda com 12 jogadores. No desenvolvimento e no Docker, ela pode ficar vazia porque o proxy mantém tudo na mesma origem.
+
 ## Referências
 
 - [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)

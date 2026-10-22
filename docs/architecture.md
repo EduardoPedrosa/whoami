@@ -4,7 +4,7 @@
 
 O frontend é uma SPA React/TypeScript com Vite. Não existe necessidade de SSR para o tabuleiro privado. Tailwind fornece os tokens/utilitários; shadcn/ui fornece componentes locais sobre Radix para diálogos, botões, inputs e tooltips. Motion anima entrada de cartas e transições de etapas, respeitando a preferência de movimento reduzido. Outfit e Geist Mono são servidas localmente. A ilustração da entrada é um asset WebP de aproximadamente 107 KB, sem renderização 3D em tempo real.
 
-O backend é uma aplicação NestJS. `GameGateway` administra transporte, ACK, origem, presença e limites. `GameService` é a autoridade das regras. `DatabaseService` guarda snapshots, sessões e recibos em SQLite com WAL, chaves estrangeiras e transações síncronas. Há um limite defensivo de 250 salas por instância e 12 jogadores por sala.
+O backend é uma aplicação NestJS. `GameGateway` administra transporte, ACK, origem, presença e limites. `GameService` é a autoridade das regras e depende do contrato `GameStore`. No CapRover, `MemoryStore` mantém snapshots, sessões e recibos em Maps, com cópias isoladas e rollback síncrono de ações que falham. O modo opcional `DatabaseService` usa SQLite com WAL, chaves estrangeiras e transações síncronas. Há um limite defensivo de 250 salas por instância e 12 jogadores por sala.
 
 `packages/shared` compila os contratos em ESM e CommonJS, com declarações TypeScript. O frontend e o backend usam os mesmos schemas Zod. TypeScript 5.9 foi mantido por compatibilidade com o intervalo oficialmente suportado pelo typescript-eslint instalado; as versões principais das aplicações foram atualizadas e estão fixadas no lockfile.
 
@@ -59,7 +59,7 @@ Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin
 - Cada comando tem um `requestId`. O servidor guarda um recibo junto à mutação em transação. Se o ACK se perde, o cliente reenvia o mesmo ID uma vez: a alteração não é aplicada de novo. O ID reutilizado com outro conteúdo é rejeitado.
 - `identity:set`, `player:solve` e `room:finish` incluem a rodada; a confirmação de acerto também identifica o jogador. `turn:pass` inclui um `turnId` único. Cliques atrasados não alteram outra pessoa ou uma rodada futura. `room:seats` aceita apenas uma permutação exata dos jogadores atuais e só na espera.
 - Snapshots antigos não substituem uma versão mais nova no cliente.
-- Um reinício carrega as salas do SQLite, marca todos como offline e reabre a janela de recuperação. A ordem, a autoria e os segredos são preservados. Snapshots do formato anterior têm os campos de cronômetro/pontos removidos ao carregar, sem apagar a sala.
+- No modo SQLite com arquivo preservado, um reinício carrega as salas, marca todos como offline e reabre a janela de recuperação. A ordem, a autoria e os segredos são preservados. Snapshots do formato anterior têm os campos de cronômetro/pontos removidos ao carregar, sem apagar a sala. No modo em memória, um reinício encerra as salas; a reconexão recupera o lugar apenas enquanto o processo mantém seu estado.
 - Se ninguém elegível está conectado, a próxima vez fica pausada até alguém voltar. Um anfitrião pode avançar uma vez; uma pessoa desconectada é removida após a janela de recuperação.
 
 ## Limites explícitos
@@ -70,7 +70,7 @@ Salas inativas expiram em 24 horas. Recibos são mantidos por 24 horas. O histó
 
 ## Verificação
 
-Vitest exercita regras, permissões, segredo, repetição segura, versões de turno, limite de pessoas, retorno ao lobby, ausência de avanço por tempo, autoria, ordem dos assentos, encerramento antecipado, sugestões sem repetição, expiração, migração do anfitrião e persistência. A integração sobe um NestJS real com SQLite e conecta clientes WebSocket e polling. Playwright joga uma rodada entre dois contextos, testa refresh/offline e as telas em vários tamanhos; axe-core verifica acessibilidade nas telas cobertas.
+Vitest exercita regras, permissões, segredo, repetição segura, versões de turno, limite de pessoas, retorno ao lobby, ausência de avanço por tempo, autoria, ordem dos assentos, encerramento antecipado, sugestões sem repetição, expiração, migração do anfitrião e persistência. As regras são verificadas com armazenamento SQLite e em memória; a integração sobe um NestJS real em memória e conecta clientes WebSocket e polling. Há uma verificação específica de rollback e isolamento das leituras em memória. Playwright joga uma rodada entre dois contextos, testa refresh/offline e as telas em vários tamanhos; axe-core verifica acessibilidade nas telas cobertas.
 
 ## Histórico
 

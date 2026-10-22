@@ -25,17 +25,18 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
   page,
   baseURL,
 }) => {
+  const socketURL = process.env.E2E_SOCKET_URL || baseURL!
   const sockets: Client[] = []
   const token = randomBytes(32).toString('hex')
   try {
-    sockets.push(await connect(baseURL!, token))
+    sockets.push(await connect(socketURL, token))
     const created = await command(sockets[0]!, {
       type: 'room:create',
       profile: { name: 'Pessoa 1', avatar: 'planet' },
       settings: { category: 'Tudo vale' },
     })
     for (let i = 2; i <= 12; i++) {
-      const socket = await connect(baseURL!, randomBytes(32).toString('hex'))
+      const socket = await connect(socketURL, randomBytes(32).toString('hex'))
       sockets.push(socket)
       await command(socket, {
         type: 'room:join',
