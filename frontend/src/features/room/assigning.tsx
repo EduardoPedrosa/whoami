@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { gameClient } from '@/lib/game-client'
 import { cn } from '@/lib/utils'
 import { createIdentitySuggester } from '@/lib/identity-suggestions'
-import { ArrowRight, Check, CheckCircle, LockSimple, Shuffle } from '@phosphor-icons/react'
+import { ArrowRight, CheckCircle, LockSimple, Shuffle } from '@phosphor-icons/react'
 import { IDENTITY_SUGGESTIONS, type RoomView } from '@whoami/shared'
 import { useState, type FormEvent } from 'react'
 
@@ -75,50 +75,40 @@ export function Assigning({ room, disabled }: { room: RoomView; disabled: boolea
               aria-invalid={!!localError}
               aria-describedby="identity-hint"
             />
-            <p
-              id="identity-hint"
-              className={cn(localError ? 'field-error' : 'text-muted-foreground')}
-            >
-              {localError || `${identity.length}/50 caracteres`}
-            </p>
-            <Button type="submit" disabled={disabled}>
+            <div className="assignment-field-meta">
+              <p
+                id="identity-hint"
+                className={cn(localError ? 'field-error' : 'text-muted-foreground')}
+              >
+                {localError || `${identity.length}/50 caracteres`}
+              </p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="assignment-suggest"
+                aria-label="Sugerir uma identidade"
+                disabled={disabled}
+                onClick={() => {
+                  const suggestion = suggestIdentity(identity)
+                  if (suggestion) {
+                    setIdentity(suggestion)
+                    setLocalError(null)
+                  }
+                }}
+              >
+                <Shuffle size={17} aria-hidden="true" />
+                Sugerir
+              </Button>
+            </div>
+            <Button type="submit" className="assignment-submit" disabled={disabled}>
               Enviar identidade
               <ArrowRight size={18} aria-hidden="true" />
             </Button>
           </form>
         )}
       </div>
-      {!submitted && (
-        <div className="suggestion-area">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const suggestion = suggestIdentity(identity)
-              if (suggestion) {
-                setIdentity(suggestion)
-                setLocalError(null)
-              }
-            }}
-          >
-            <Shuffle size={17} aria-hidden="true" />
-            Sugerir uma identidade
-          </Button>
-        </div>
-      )}
       <div className="assignment-progress" role="status">
-        <div className="mini-player-row">
-          {room.players.map((p) => (
-            <span
-              key={p.id}
-              className={cn('mini-player', p.hasAssigned && 'mini-player-done')}
-              title={`${p.name}: ${p.hasAssigned ? 'escolheu' : 'escolhendo'}`}
-            >
-              <Avatar avatar={p.avatar} />
-              {p.hasAssigned && <Check size={13} weight="bold" aria-hidden="true" />}
-            </span>
-          ))}
-        </div>
         <p>
           <strong>
             {assigned} de {room.players.length}

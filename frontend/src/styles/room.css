@@ -393,7 +393,8 @@
   line-height: 1.7;
 }
 .assignment-card {
-  max-width: 405px;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
   padding: 24px;
   border: 1px solid #a5b5d5;
@@ -451,13 +452,21 @@
 .assignment-form .field-error {
   color: #9c202c;
 }
-.assignment-form button {
-  background: var(--accent);
-  color: var(--foreground);
-  margin-top: 6px;
+.assignment-field-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
-.assignment-form button:hover {
-  background: var(--secondary);
+.assignment-field-meta p {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.assignment-suggest {
+  color: var(--accent-foreground);
+  font-size: 12px;
+  padding-inline: 10px;
 }
 .assignment-confirmed {
   text-align: center;
@@ -488,52 +497,12 @@
   font-size: 11px;
   color: #34476b;
 }
-.suggestion-area {
-  display: flex;
-  justify-content: center;
-  margin-top: 12px;
-}
-.suggestion-area button {
-  color: var(--muted-foreground);
-  font-size: 11px;
-}
 .assignment-progress {
+  max-width: 480px;
   text-align: center;
-  margin: 26px auto 0;
-}
-.mini-player-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 13px;
-}
-.mini-player {
-  position: relative;
-  opacity: 0.65;
-}
-.mini-player .player-avatar {
-  width: 31px;
-  height: 31px;
-  border-radius: 10px;
-}
-.mini-player .player-avatar svg {
-  width: 18px;
-  height: 18px;
-}
-.mini-player-done {
-  opacity: 1;
-}
-.mini-player > svg {
-  position: absolute;
-  right: -3px;
-  bottom: -3px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: var(--primary-foreground);
-  padding: 2px;
-  width: 15px;
-  height: 15px;
+  margin: 16px auto 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 .assignment-progress > p {
   font-size: 12px;
@@ -819,11 +788,11 @@
   }
 }
 
-.assignment-form button {
+.assignment-submit {
   background: var(--primary);
   color: var(--primary-foreground);
 }
-.assignment-form button:hover {
+.assignment-submit:hover {
   background: var(--primary-hover);
 }
 .assignment-confirmed > button {
