@@ -19,6 +19,9 @@ import { CircleTable } from '@/features/room/components/circle-table'
 export function Playing({ room, disabled }: { room: RoomView; disabled: boolean }) {
   const active = room.players.find((p) => p.id === room.activePlayerId)
   const isMyTurn = active?.id === room.selfId
+  const hasNextPlayer = room.players.some(
+    (player) => player.id !== active?.id && !player.solved && !player.departed,
+  )
   const target = room.players.find(
     (p) => p.id === room.assignmentTargetId && !p.solved && !p.departed,
   )
@@ -52,7 +55,7 @@ export function Playing({ room, disabled }: { room: RoomView; disabled: boolean 
       <CircleTable room={room} />
       <div className="turn-controls">
         <div className="turn-buttons">
-          {active && (isMyTurn || room.hostId === room.selfId) && (
+          {active && hasNextPlayer && (isMyTurn || room.hostId === room.selfId) && (
             <Button
               variant="outline"
               disabled={disabled}

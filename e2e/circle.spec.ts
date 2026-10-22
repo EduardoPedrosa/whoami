@@ -138,3 +138,67 @@ test('twelve physical seats, author confirmation, adjustable order and confirmed
     sockets.forEach((socket) => socket.disconnect())
   }
 })
+
+test('passing rotates between two seats even when the other phone disconnects', async ({
+  page,
+  baseURL,
+}) => {
+  const socketURL = process.env.E2E_SOCKET_URL || baseURL!
+  const token = randomBytes(32).toString('hex')
+  const sockets: Client[] = []
+  try {
+    await page.goto('/')
+    await page.getByLabel('Seu nome').fill('Alice')
+    await expect(page.getByRole('button', { name: 'Criar sala', exact: true })).toBeEnabled()
+    await page.getByRole('button', { name: 'Criar sala', exact: true }).click()
+    await expect(page.getByRole('heading', { name: /Sala de espera/ })).toBeVisible()
+    const code = (await page.locator('.room-topline .mono').textContent())!
+    const bob = await connect(socketURL, token)
+    sockets.push(bob)
+    const joined = await command(bob, {
+      type: 'room:join',
+      code,
+      profile: { name: 'Bob', avatar: 'ghost' },
+    })
+    await command(bob, { type: 'room:ready', ready: true })
+    await page.getByRole('button', { name: 'Estou pronto', exact: true }).click()
+    await page.getByRole('button', { name: 'Começar rodada', exact: true }).click()
+    await expect(page.getByLabel('Quem essa pessoa vai ser?')).toBeVisible()
+    await command(bob, { type: 'identity:set', round: 1, identity: 'Sherlock Holmes' })
+    await page.getByLabel('Quem essa pessoa vai ser?').fill('Batman')
+    await page.getByRole('button', { name: 'Enviar identidade', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Sua vez', exact: true })).toBeVisible()
+    await page.getByRole('button', { name: 'Passar a vez', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Vez de Bob', exact: true })).toBeVisible()
+    const state = await bob.timeout(5000).emitWithAck('sync')
+    if (!state.ok || !state.room) throw new Error('Room missing after passing')
+    expect(state.room.activePlayerId).toBe(joined.selfId)
+    await command(bob, { type: 'turn:pass', turnId: state.room.turnId! })
+    await expect(page.getByRole('heading', { name: 'Sua vez', exact: true })).toBeVisible()
+    bob.disconnect()
+    await expect(page.locator('.player-roster li').filter({ hasText: 'Bob' })).toContainText(
+      'Reconectando',
+    )
+    await expect(page.locator('.next-turns')).toContainText('Bob')
+    await page.getByRole('button', { name: 'Passar a vez', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Vez de Bob', exact: true })).toBeVisible()
+    await expect(page.locator('.circle-active')).toContainText('Bob')
+    await page.screenshot({ path: 'test-results/passing-offline-desktop.png', fullPage: false })
+    await page.getByRole('button', { name: 'Avançar a vez', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Sua vez', exact: true })).toBeVisible()
+    const resumed = await connect(socketURL, token)
+    sockets.push(resumed)
+    const recovered = await resumed.timeout(5000).emitWithAck('sync')
+    if (!recovered.ok || !recovered.room) throw new Error('Room missing after reconnecting')
+    expect(recovered.room.selfId).toBe(joined.selfId)
+    expect(recovered.room.activePlayerId).toBe(joined.hostId)
+    await expect(page.locator('.player-roster li').filter({ hasText: 'Bob' })).toContainText(
+      'Na roda',
+    )
+    await page.getByRole('button', { name: 'Encerrar partida', exact: true }).click()
+    await page.getByRole('button', { name: 'Sim, encerrar partida', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Fim da rodada', exact: true })).toBeVisible()
+  } finally {
+    sockets.forEach((socket) => socket.disconnect())
+  }
+})

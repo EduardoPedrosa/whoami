@@ -55,12 +55,12 @@ Comandos: `room:create`, `room:join`, `room:ready`, `room:settings`, `room:begin
 
 - O Socket.IO inicia em HTTP polling e promove a conexão para WebSocket quando disponível, mantendo polling quando a promoção é bloqueada; o cliente reconecta com espera progressiva e aleatória entre tentativas.
 - Há heartbeat no servidor, sincronização após conectar e ao voltar à aba, atualização de presença e medição de latência. A recuperação do transporte é complementada pela recuperação da aplicação.
-- Ao perder a rede, a tela conserva o último snapshot e bloqueia comandos. O lugar permanece reservado por 120 segundos. Se o armazenamento estiver bloqueado, o navegador informa que a recarga pode perder a sessão.
+- Ao perder a rede, a tela conserva o último snapshot e bloqueia comandos. Na escolha de identidades e na partida, o lugar e a carta permanecem até a pessoa sair explicitamente ou a sala encerrar/expirar. Na espera e após o fim da rodada, lugares desconectados expiram após 120 segundos. Se o armazenamento estiver bloqueado, o navegador informa que a recarga pode perder a sessão.
 - Cada comando tem um `requestId`. O servidor guarda um recibo junto à mutação em transação. Se o ACK se perde, o cliente reenvia o mesmo ID uma vez: a alteração não é aplicada de novo. O ID reutilizado com outro conteúdo é rejeitado.
 - `identity:set`, `player:solve` e `room:finish` incluem a rodada; a confirmação de acerto também identifica o jogador. `turn:pass` inclui um `turnId` único. Cliques atrasados não alteram outra pessoa ou uma rodada futura. `room:seats` aceita apenas uma permutação exata dos jogadores atuais e só na espera.
 - Snapshots antigos não substituem uma versão mais nova no cliente.
 - No modo SQLite com arquivo preservado, um reinício carrega as salas, marca todos como offline e reabre a janela de recuperação. A ordem, a autoria e os segredos são preservados. Snapshots do formato anterior têm os campos de cronômetro/pontos removidos ao carregar, sem apagar a sala. No modo em memória, um reinício encerra as salas; a reconexão recupera o lugar apenas enquanto o processo mantém seu estado.
-- Se ninguém elegível está conectado, a próxima vez fica pausada até alguém voltar. Um anfitrião pode avançar uma vez; uma pessoa desconectada é removida após a janela de recuperação.
+- Passar a vez segue a ordem física dos lugares, incluindo pessoas desconectadas. Apenas quem já acertou ou saiu explicitamente fica fora dos próximos turnos. O anfitrião pode avançar a vez de outra pessoa; sem outro jogador elegível, passar é rejeitado em vez de voltar silenciosamente à mesma pessoa. Desconectar ou reconectar não muda a vez.
 
 ## Limites explícitos
 

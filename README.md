@@ -7,7 +7,7 @@ Jogo de “Quem sou eu?” para 2 a 12 pessoas, em salas privadas. Cada pessoa e
 - Frontend inteiramente em **TypeScript + React 19 + Vite 8**, **Tailwind 4**, componentes **shadcn/ui/Radix** e Motion. Tema claro com azul cobalto, menu inicial compacto, fontes locais, arte própria, avatares, navegação por teclado, movimento reduzido e layouts para celular.
 - Backend **NestJS 12 + Socket.IO 4**, com regras e validação no servidor. Tipos, schemas Zod e dados de categorias compartilhados entre os dois projetos.
 - Salas por código/link, administrador, prontidão, categorias, ordem de assentos ajustável e jogadores em roda. Sem cronômetro ou pontuação; só quem escreveu uma identidade confirma o acerto daquela pessoa.
-- Reconexão com sessão estável, snapshot completo, ACK com reenvio seguro e controle de versão/turno. O lugar fica reservado por 2 minutos. Recarregar não troca sua identidade.
+- Reconexão com sessão estável, snapshot completo, ACK com reenvio seguro e controle de versão/turno. Durante a rodada, desconectar o celular preserva seu lugar e a ordem da roda. Recarregar não troca sua identidade.
 - Estado em **memória no CapRover**, sem banco. SQLite com WAL e transações continua disponível para quem precisar preservar salas e sessões após reinícios.
 
 ## Rodar em desenvolvimento
@@ -94,7 +94,7 @@ O volume `game-data` mantém o SQLite. Faça backups consistentes com a API `bac
 6. A rodada termina quando todos descobrem suas identidades ou quando o administrador escolhe **Encerrar partida** e confirma. As identidades são reveladas, sem ranking ou pontos.
 7. O administrador pode iniciar outra rodada, mantendo a ordem dos lugares.
 
-A aplicação não transmite áudio/vídeo. Uma desconexão temporária mantém o lugar por 2 minutos; depois disso o participante é removido e o anfitrião é transferido se necessário. Se alguém sai durante a escolha de identidades, a mesa volta à espera para reorganizar as cartas.
+A aplicação não transmite áudio/vídeo. Durante a escolha de identidades e a partida, uma desconexão mantém o lugar, a carta e a vez da pessoa enquanto a sala existir. O anfitrião pode avançar a vez de alguém desconectado. Na espera e após o fim da rodada, lugares desconectados expiram após 2 minutos e o anfitrião é transferido se necessário. Se alguém sai explicitamente durante a escolha de identidades, a mesa volta à espera para reorganizar as cartas.
 
 ## Documentação e próximos passos
 

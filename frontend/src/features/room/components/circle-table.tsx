@@ -20,7 +20,7 @@ export function CircleTable({ room }: { room: RoomView }) {
   const next = Array.from(
     { length: room.players.length },
     (_, index) => room.players[(activeIndex + index + 1) % room.players.length]!,
-  ).filter((p) => !p.solved && !p.departed && p.online && p.id !== room.activePlayerId)
+  ).filter((p) => !p.solved && !p.departed && p.id !== room.activePlayerId)
   const selected = room.players.find((p) => p.id === selectedId)
   return (
     <div className="circle-view">
@@ -95,7 +95,7 @@ export function CircleTable({ room }: { room: RoomView }) {
             ))}
           </ol>
         ) : (
-          <p>Sem outra pessoa aguardando a vez.</p>
+          <p>Só uma pessoa ainda precisa descobrir a identidade.</p>
         )}
       </div>
       <Dialog

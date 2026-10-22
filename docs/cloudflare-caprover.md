@@ -31,7 +31,7 @@ STORAGE_MODE=memory
 CORS_ORIGIN=https://whoami.eduardopedrosa-dev.workers.dev
 ```
 
-O modo `memory` usa Maps em memória, sem banco ou arquivo de dados. Reenvios continuam idempotentes e as ações são atômicas. A reserva de lugar de dois minutos funciona enquanto o processo está ativo. Reiniciar, atualizar ou perder o processo encerra todas as salas. Nunca aumente a contagem de instâncias nesse modo.
+O modo `memory` usa Maps em memória, sem banco ou arquivo de dados. Reenvios continuam idempotentes e as ações são atômicas. Durante a rodada, desconexões preservam os lugares e a ordem da roda enquanto a sala existir; na espera e após o fim, a reserva dura dois minutos. Reiniciar, atualizar ou perder o processo encerra todas as salas. Nunca aumente a contagem de instâncias nesse modo.
 
 O modo anterior continua disponível com `STORAGE_MODE=sqlite`, `DATABASE_PATH` apontando para um volume persistente. Sem `STORAGE_MODE`, o padrão legado continua sendo SQLite. O Dockerfile do CapRover define explicitamente `memory`.
 

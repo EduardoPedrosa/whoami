@@ -250,13 +250,17 @@ export class GameService implements OnModuleInit {
             }
             break
           }
-          case 'turn:pass':
+          case 'turn:pass': {
             this.requireTurn(room, command.turnId)
             if (room.activePlayerId !== self.id && room.hostId !== self.id)
               return fail('NOT_YOUR_TURN', 'Aguarde sua vez para passar.')
+            const activeId = room.activePlayerId
+            if (!room.players.some((p) => p.id !== activeId && !p.solved && !p.departed))
+              return fail('NO_NEXT_PLAYER', 'Só uma pessoa ainda precisa descobrir a identidade.')
             this.activity(room, `${this.active(room).name} passou a vez.`, 'game')
             this.advance(room)
             break
+          }
           case 'player:solve': {
             this.requirePhase(room, 'playing')
             this.requireRound(room, command.round)
@@ -377,13 +381,12 @@ export class GameService implements OnModuleInit {
     const index = room.players.findIndex((p) => p.id === room.activePlayerId)
     for (let offset = 1; offset <= room.players.length; offset++) {
       const player = room.players[(index + offset) % room.players.length]!
-      if (!player.solved && !player.departed && player.online) {
+      // Seats follow the physical circle, even when a phone loses connection.
+      if (!player.solved && !player.departed) {
         this.setActive(room, player.id)
         return
       }
     }
-    // Pause while every remaining player reconnects; tick resumes when someone returns.
-    room.activePlayerId = null
   }
   private finish(room: Room, message: string) {
     room.phase = 'finished'
@@ -438,6 +441,7 @@ export class GameService implements OnModuleInit {
       let dirty = false
       for (const player of [...room.players]) {
         if (
+          (room.phase === 'lobby' || room.phase === 'finished') &&
           !player.departed &&
           !player.online &&
           player.disconnectedAt !== null &&

@@ -2,7 +2,7 @@
 
 ## Cloudflare e CapRover
 
-A publicação usa frontend estático na Cloudflare e uma instância NestJS no CapRover, com HTTPS e WebSocket. O backend usa `STORAGE_MODE=memory`, sem banco nem volume. Quedas breves de conexão preservam o lugar por dois minutos enquanto o processo está ativo; reinícios e atualizações encerram as salas abertas. O GitHub Actions compila, testa, publica a imagem e entrega ao CapRover sua referência imutável. Veja [configuração, variáveis e comandos de validação](cloudflare-caprover.md).
+A publicação usa frontend estático na Cloudflare e uma instância NestJS no CapRover, com HTTPS e WebSocket. O backend usa `STORAGE_MODE=memory`, sem banco nem volume. Durante a rodada, desconexões preservam os lugares e a ordem da roda enquanto a sala existir. Na espera e após o fim, a reserva dura dois minutos. Reinícios e atualizações encerram as salas abertas. O GitHub Actions compila, testa, publica a imagem e entrega ao CapRover sua referência imutável. Veja [configuração, variáveis e comandos de validação](cloudflare-caprover.md).
 
 ## Docker com persistência opcional
 

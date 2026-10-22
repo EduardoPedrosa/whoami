@@ -152,8 +152,10 @@ describe.each(['sqlite', 'memory'])('%s storage', (mode) => {
       expect(solved.players[0]?.solved).toBe(true)
       expect(solved.activePlayerId).toBe(solved.players[1]?.id)
       expect(() => send(bob, { type: 'turn:pass', turnId: r.turnId! })).toThrow('vez mudou')
-      const passed = room(send(bob, { type: 'turn:pass', turnId: solved.turnId! }))
-      expect(passed.activePlayerId).toBe(solved.players[1]?.id)
+      expect(() => send(bob, { type: 'turn:pass', turnId: solved.turnId! })).toThrow(
+        'Só uma pessoa',
+      )
+      expect(game.current(tokenHash(bob))?.turnId).toBe(solved.turnId)
       expect(() =>
         send(bob, { type: 'player:solve', playerId: r.players[0]!.id, round: r.round }),
       ).toThrow('já foi descoberta')
@@ -177,6 +179,20 @@ describe.each(['sqlite', 'memory'])('%s storage', (mode) => {
       expect(game.current(tokenHash(alice))?.activePlayerId).toBe(r.activePlayerId)
       expect(game.current(tokenHash(alice))).not.toHaveProperty('turnEndsAt')
       expect(r.settings).not.toHaveProperty('turnSeconds')
+    })
+    it.each([true, false])('passes to the other physical seat with online=%s', (online) => {
+      const r = playing()
+      if (!online) game.disconnected(tokenHash(bob))
+      expect(() => send(bob, { type: 'turn:pass', turnId: r.turnId! })).toThrow('Aguarde sua vez')
+      const passed = room(send(alice, { type: 'turn:pass', turnId: r.turnId! }))
+      expect(passed.activePlayerId).toBe(r.players[1]?.id)
+      expect(passed.turnId).not.toBe(r.turnId)
+      expect(passed.players[1]?.online).toBe(online)
+      expect(game.current(tokenHash(bob))?.activePlayerId).toBe(passed.activePlayerId)
+      const back = room(send(alice, { type: 'turn:pass', turnId: passed.turnId! }))
+      expect(back.activePlayerId).toBe(r.players[0]?.id)
+      game.connected(tokenHash(bob))
+      expect(game.current(tokenHash(bob))?.activePlayerId).toBe(back.activePlayerId)
     })
     it('lets only the host finish early and rejects commands from an older round', () => {
       const r = playing()
@@ -291,16 +307,30 @@ describe.each(['sqlite', 'memory'])('%s storage', (mode) => {
       expect(r.players).toHaveLength(1)
       expect(r.players[0]?.hasAssigned).toBe(false)
     })
-    it('pauses when all remaining players are offline and resumes on reconnect', () => {
+    it('keeps the current turn and both seats while phones are disconnected during play', () => {
       const r = playing()
       game.disconnected(tokenHash(alice))
       game.disconnected(tokenHash(bob))
-      // Host explicitly skips the offline player; no countdown means no automatic unfair scoring.
-      const paused = room(send(alice, { type: 'turn:pass', turnId: r.turnId! }))
-      expect(paused.activePlayerId).toBeNull()
+      game.tick(Date.now() + 120_001)
+      expect(game.current(tokenHash(alice))?.activePlayerId).toBe(r.activePlayerId)
+      expect(game.current(tokenHash(alice))?.players).toHaveLength(2)
       game.connected(tokenHash(bob))
       game.tick()
-      expect(game.current(tokenHash(bob))?.activePlayerId).toBe(r.players[1]?.id)
+      expect(game.current(tokenHash(bob))?.activePlayerId).toBe(r.activePlayerId)
+      expect(game.current(tokenHash(bob))?.selfId).toBe(r.players[1]?.id)
+    })
+    it('preserves assignments and sessions when a phone disconnects for more than two minutes', () => {
+      const r = begin()
+      send(alice, { type: 'identity:set', identity: 'Batman', round: r.round })
+      game.disconnected(tokenHash(bob))
+      game.tick(Date.now() + 120_001)
+      game.connected(tokenHash(bob))
+      const recovered = game.current(tokenHash(bob))!
+      expect(recovered.phase).toBe('assigning')
+      expect(recovered.players).toHaveLength(2)
+      expect(recovered.selfId).toBe(r.players[1]?.id)
+      const play = room(send(bob, { type: 'identity:set', identity: 'Superman', round: r.round }))
+      expect(play.phase).toBe('playing')
     })
     it('upgrades stored timed/scored rooms without losing seats or secrets', () => {
       const r = playing()

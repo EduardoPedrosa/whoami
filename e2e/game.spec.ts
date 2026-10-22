@@ -154,6 +154,11 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await assertAccessible(b)
     await a.screenshot({ path: 'test-results/playing-desktop.png', fullPage: true })
     await b.screenshot({ path: 'test-results/playing-mobile.png', fullPage: true })
+    await a.getByRole('button', { name: 'Passar a vez', exact: true }).click()
+    await expect(a.getByRole('heading', { name: 'Vez de Bob', exact: true })).toBeVisible()
+    await expect(b.getByRole('heading', { name: 'Sua vez', exact: true })).toBeVisible()
+    await b.getByRole('button', { name: 'Passar a vez', exact: true }).click()
+    await expect(a.getByRole('heading', { name: 'Sua vez', exact: true })).toBeVisible()
     await b.reload()
     await expect(b.getByRole('heading', { name: 'Vez de Alice' })).toBeVisible()
     await expect(b.locator('.circle-own')).not.toContainText('Sherlock Holmes')
@@ -172,6 +177,10 @@ test('full two-player round with refresh, offline recovery, secrets and author c
     await b.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
     await b.setViewportSize({ width: 390, height: 844 })
     await expect(b.getByRole('heading', { name: 'Sua vez' })).toBeVisible()
+    await expect(b.getByRole('button', { name: 'Passar a vez', exact: true })).toHaveCount(0)
+    await expect(b.locator('.next-turns')).toContainText(
+      'Só uma pessoa ainda precisa descobrir a identidade.',
+    )
     await expect(a.locator('.circle-own')).toContainText('Uma capivara')
     await a.getByRole('button', { name: 'Confirmar acerto de Bob', exact: true }).click()
     await a.getByRole('button', { name: 'Confirmar acerto', exact: true }).click()
